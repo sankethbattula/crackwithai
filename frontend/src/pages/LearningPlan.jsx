@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Search, ChevronDown, Check } from 'lucide-react'
+import { Search, ChevronDown, Check, ExternalLink } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
@@ -121,7 +121,7 @@ const TOPIC_HEADINGS = {
   dsa: { title: 'Data Structures & Algorithms', sub: 'Interview-first problem patterns.', icon: '{}' },
   python: { title: 'Python', sub: 'Fast to learn, huge for AI and backend.', icon: '🐍' },
   java: { title: 'Java', sub: 'Strong OOP, JVM ecosystem, and enterprise patterns.', icon: '☕' },
-  c: { title: 'C', sub: 'Memory, pointers, and systems thinking.', icon: 'C' },
+  c: { title: 'C Language', sub: 'Memory, pointers, and systems thinking.', icon: 'C' },
   cpp: { title: 'C++', sub: 'STL, RAII, and performance-aware coding.', icon: 'C++' },
   sql: { title: 'SQL', sub: 'Queries analysts and backend engineers use daily.', icon: '🗄' },
   'system-design': { title: 'System Design', sub: 'End-to-end architecture for scale.', icon: '🏗' },
@@ -3398,6 +3398,1650 @@ HAVING COUNT(*) > 5;`}</CodeBlock>
   )
 }
 
+function DSACode({ selectedLang, blocks }) {
+  const code = blocks?.[selectedLang] || ''
+  return <CodeBlock>{code}</CodeBlock>
+}
+
+const DSA_GO_DEEPER = {
+  arrays: {
+    name: 'Arrays',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Video explanations + practice problems' },
+      { href: 'https://leetcode.com/tag/array/', label: 'LeetCode — Practice array problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/array-data-structure/', label: 'GeeksForGeeks — Theory + examples + quiz' },
+      { href: 'https://visualgo.net/en/array', label: 'Visualgo — See arrays animated in real time' },
+    ],
+  },
+  strings: {
+    name: 'Strings',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Strings patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/string/', label: 'LeetCode — String problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/string-data-structure/', label: 'GeeksForGeeks — Strings theory + examples' },
+    ],
+  },
+  linkedList: {
+    name: 'Linked List',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Linked list patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/linked-list/', label: 'LeetCode — Linked list problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/data-structures/linked-list/', label: 'GeeksForGeeks — Linked list theory + examples' },
+      { href: 'https://visualgo.net/en/list', label: 'Visualgo — See linked lists animated' },
+    ],
+  },
+  stack: {
+    name: 'Stack',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Stack patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/stack/', label: 'LeetCode — Stack problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/stack-data-structure/', label: 'GeeksForGeeks — Stack theory + examples' },
+      { href: 'https://visualgo.net/en/list', label: 'Visualgo — Stack visualizations (use list/stack view)' },
+    ],
+  },
+  queue: {
+    name: 'Queue',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Queue patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/queue/', label: 'LeetCode — Queue problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/queue-data-structure/', label: 'GeeksForGeeks — Queue theory + examples' },
+      { href: 'https://visualgo.net/en/queue', label: 'Visualgo — See queues animated' },
+    ],
+  },
+  hashMap: {
+    name: 'Hash Map',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Hashing patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/hash-table/', label: 'LeetCode — Hash table problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/hashing-data-structure/', label: 'GeeksForGeeks — Hashing theory + examples' },
+      { href: 'https://visualgo.net/en/hashtable', label: 'Visualgo — Hash table visualization' },
+    ],
+  },
+  twoPointer: {
+    name: 'Two Pointer',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Two pointers patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/two-pointers/', label: 'LeetCode — Two pointers problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/two-pointers-technique/', label: 'GeeksForGeeks — Two pointers technique guide' },
+    ],
+  },
+  slidingWindow: {
+    name: 'Sliding Window',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Sliding window patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/sliding-window/', label: 'LeetCode — Sliding window problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/window-sliding-technique/', label: 'GeeksForGeeks — Sliding window technique guide' },
+    ],
+  },
+  binarySearch: {
+    name: 'Binary Search',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Binary search patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/binary-search/', label: 'LeetCode — Binary search problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/binary-search/', label: 'GeeksForGeeks — Binary search guide' },
+      { href: 'https://visualgo.net/en/bst', label: 'Visualgo — Binary search / BST visualization' },
+    ],
+  },
+  recursion: {
+    name: 'Recursion',
+    links: [
+      { href: 'https://www.geeksforgeeks.org/recursion/', label: 'GeeksForGeeks — Recursion fundamentals' },
+      { href: 'https://leetcode.com/tag/recursion/', label: 'LeetCode — Recursion-tagged problems' },
+      { href: 'https://www.freecodecamp.org/news/recursion-in-javascript/', label: 'FreeCodeCamp — Recursion explained (concepts apply across languages)' },
+    ],
+  },
+  sorting: {
+    name: 'Sorting Algorithms',
+    links: [
+      { href: 'https://visualgo.net/en/sorting', label: 'Visualgo — Sorting animations' },
+      { href: 'https://www.geeksforgeeks.org/sorting-algorithms/', label: 'GeeksForGeeks — Sorting algorithms overview' },
+      { href: 'https://leetcode.com/tag/sorting/', label: 'LeetCode — Sorting-tagged problems' },
+    ],
+  },
+  binaryTree: {
+    name: 'Binary Tree',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Trees track in the roadmap' },
+      { href: 'https://leetcode.com/tag/tree/', label: 'LeetCode — Tree problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/binary-tree-data-structure/', label: 'GeeksForGeeks — Binary tree fundamentals' },
+      { href: 'https://visualgo.net/en/bst', label: 'Visualgo — BST visualization' },
+    ],
+  },
+  heap: {
+    name: 'Heap / Priority Queue',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Heap patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/heap-priority-queue/', label: 'LeetCode — Heap / priority queue problems' },
+      { href: 'https://www.geeksforgeeks.org/heap-data-structure/', label: 'GeeksForGeeks — Heap data structure guide' },
+      { href: 'https://visualgo.net/en/heap', label: 'Visualgo — Heap visualization' },
+    ],
+  },
+  graphs: {
+    name: 'Graphs',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Graphs track in the roadmap' },
+      { href: 'https://leetcode.com/tag/graph/', label: 'LeetCode — Graph problems' },
+      { href: 'https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/', label: 'GeeksForGeeks — Graph DS + algorithms' },
+      { href: 'https://visualgo.net/en/graphds', label: 'Visualgo — Graph visualizations' },
+    ],
+  },
+  bfs: {
+    name: 'BFS',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — BFS problems in the roadmap' },
+      { href: 'https://leetcode.com/tag/breadth-first-search/', label: 'LeetCode — BFS-tagged problems' },
+      { href: 'https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/', label: 'GeeksForGeeks — BFS guide' },
+      { href: 'https://visualgo.net/en/dfsbfs', label: 'Visualgo — BFS/DFS visualization' },
+    ],
+  },
+  dfs: {
+    name: 'DFS',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — DFS problems in the roadmap' },
+      { href: 'https://leetcode.com/tag/depth-first-search/', label: 'LeetCode — DFS-tagged problems' },
+      { href: 'https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/', label: 'GeeksForGeeks — DFS guide' },
+      { href: 'https://visualgo.net/en/dfsbfs', label: 'Visualgo — BFS/DFS visualization' },
+    ],
+  },
+  dp: {
+    name: 'Dynamic Programming',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — DP track in the roadmap' },
+      { href: 'https://leetcode.com/tag/dynamic-programming/', label: 'LeetCode — DP problems by difficulty' },
+      { href: 'https://www.geeksforgeeks.org/dynamic-programming/', label: 'GeeksForGeeks — DP fundamentals' },
+      { href: 'https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns', label: 'DP Patterns — Common DP templates' },
+    ],
+  },
+  greedy: {
+    name: 'Greedy',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Greedy patterns in the roadmap' },
+      { href: 'https://leetcode.com/tag/greedy/', label: 'LeetCode — Greedy-tagged problems' },
+      { href: 'https://www.geeksforgeeks.org/greedy-algorithms/', label: 'GeeksForGeeks — Greedy algorithms overview' },
+    ],
+  },
+  backtracking: {
+    name: 'Backtracking',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Backtracking track in the roadmap' },
+      { href: 'https://leetcode.com/tag/backtracking/', label: 'LeetCode — Backtracking-tagged problems' },
+      { href: 'https://www.geeksforgeeks.org/backtracking-algorithms/', label: 'GeeksForGeeks — Backtracking algorithms guide' },
+    ],
+  },
+  trie: {
+    name: 'Trie',
+    links: [
+      { href: 'https://neetcode.io/roadmap', label: 'NeetCode — Trie problems in the roadmap' },
+      { href: 'https://leetcode.com/tag/trie/', label: 'LeetCode — Trie-tagged problems' },
+      { href: 'https://www.geeksforgeeks.org/trie-insert-and-search/', label: 'GeeksForGeeks — Trie insert/search' },
+      { href: 'https://visualgo.net/en/suffixtree', label: 'Visualgo — Trie-like trees visualization' },
+    ],
+  },
+}
+
+function DsaGoDeeperBox({ conceptKey }) {
+  const cfg = DSA_GO_DEEPER[conceptKey]
+  if (!cfg) return null
+  return (
+    <div className="mt-6 rounded-lg border border-[#ddd6fe] bg-[#f5f3ff] p-4">
+      <div className="mb-3 font-semibold text-primary">📚 Go Deeper — Learn More About {cfg.name}</div>
+      <div className="space-y-2">
+        {cfg.links.map((l) => (
+          <div key={l.href} className="flex items-start gap-2">
+            <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />
+            <ResourceLink href={l.href}>{l.label}</ResourceLink>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DsaLanguageSelector({ selectedLang, setSelectedLang }) {
+  const langs = [
+    { id: 'python', label: 'Python' },
+    { id: 'java', label: 'Java' },
+    { id: 'c', label: 'C' },
+    { id: 'cpp', label: 'C++' },
+  ]
+
+  return (
+    <div className="mb-6 flex flex-wrap items-center gap-2">
+      {langs.map((l) => {
+        const active = selectedLang === l.id
+        return (
+          <button
+            key={l.id}
+            type="button"
+            onClick={() => setSelectedLang(l.id)}
+            className={[
+              'rounded-lg px-4 py-2 text-sm font-semibold transition',
+              active ? 'bg-primary text-white' : 'border border-gray-300 bg-white text-gray-600 hover:border-gray-400',
+            ].join(' ')}
+          >
+            {l.label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+function DsaArrayVisual() {
+  const values = [10, 20, 30, 40, 50]
+  return (
+    <div className="mb-6">
+      <div className="flex gap-0 overflow-x-auto">
+        {values.map((v) => (
+          <div
+            key={v}
+            className="flex h-12 w-14 shrink-0 items-center justify-center border border-purple-400 bg-purple-600 font-mono text-sm font-bold text-white"
+          >
+            {v}
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-0">
+        {values.map((_, idx) => (
+          <div key={idx} className="w-14 shrink-0 pt-1 text-center font-mono text-xs text-gray-500">
+            [{idx}]
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DsaStringVisual() {
+  const chars = ['H', 'e', 'l', 'l', 'o']
+  return (
+    <div className="mb-6">
+      <div className="flex gap-0 overflow-x-auto">
+        {chars.map((c, i) => (
+          <div
+            key={`${c}-${i}`}
+            className="flex h-12 w-14 shrink-0 items-center justify-center border border-purple-400 bg-purple-50 font-mono text-sm font-bold text-purple-800"
+          >
+            {c}
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-0">
+        {chars.map((_, idx) => (
+          <div key={idx} className="w-14 shrink-0 pt-1 text-center font-mono text-xs text-gray-500">
+            [{idx}]
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DsaLinkedListVisual() {
+  const nodes = [10, 20, 30, 40]
+  return (
+    <div className="mb-6 overflow-x-auto">
+      <div className="flex min-w-max items-center gap-3">
+        <div className="mr-1 text-xs font-semibold text-gray-600">head</div>
+        {nodes.map((v, idx) => (
+          <div key={v} className="flex items-center gap-3">
+            <div className="flex h-12 w-16 items-center justify-center rounded-md border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800">
+              {v}
+            </div>
+            <div className="text-lg font-bold text-gray-500">{idx === nodes.length - 1 ? '→' : '→'}</div>
+          </div>
+        ))}
+        <div className="rounded-md border border-gray-300 bg-white px-3 py-2 font-mono text-xs font-semibold text-gray-600">
+          NULL
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DsaStackVisual() {
+  const items = [10, 20, 30]
+  return (
+    <div className="mb-6 flex items-start gap-6">
+      <div className="text-xs font-semibold text-gray-600">TOP</div>
+      <div className="flex flex-col-reverse">
+        {items.map((v) => (
+          <div
+            key={v}
+            className="flex h-12 w-16 items-center justify-center border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800"
+          >
+            {v}
+          </div>
+        ))}
+      </div>
+      <div className="text-xs font-semibold text-gray-600">BOTTOM</div>
+    </div>
+  )
+}
+
+function DsaQueueVisual() {
+  const items = [10, 20, 30, 40, 50]
+  return (
+    <div className="mb-6">
+      <div className="mb-2 flex items-center justify-between text-xs font-semibold text-gray-600">
+        <span>FRONT ↓ (dequeue)</span>
+        <span>BACK ↓ (enqueue)</span>
+      </div>
+      <div className="flex gap-0 overflow-x-auto">
+        {items.map((v) => (
+          <div
+            key={v}
+            className="flex h-12 w-14 shrink-0 items-center justify-center border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800"
+          >
+            {v}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DsaHashMapVisual() {
+  const buckets = [
+    { idx: 0, key: null, val: null },
+    { idx: 1, key: null, val: null },
+    { idx: 2, key: null, val: null },
+    { idx: 3, key: 'age', val: '25' },
+    { idx: 4, key: null, val: null },
+    { idx: 5, key: null, val: null },
+    { idx: 6, key: null, val: null },
+    { idx: 7, key: 'gpa', val: '3.9' },
+    { idx: 8, key: null, val: null },
+    { idx: 9, key: 'name', val: '"Sai"' },
+  ]
+  return (
+    <div className="mb-6 overflow-x-auto">
+      <div className="mb-2 text-xs font-semibold text-gray-600">Buckets (0–9)</div>
+      <div className="grid min-w-[520px] grid-cols-5 gap-3">
+        {buckets.map((b) => (
+          <div key={b.idx} className="rounded-lg border border-gray-200 bg-white p-3">
+            <div className="flex items-center justify-between text-xs font-semibold text-gray-600">
+              <span>bucket[{b.idx}]</span>
+              <span className="font-mono text-[11px] text-gray-400">h()%10</span>
+            </div>
+            {b.key ? (
+              <div className="mt-2 rounded-md border border-purple-200 bg-purple-50 p-2">
+                <div className="font-mono text-xs text-purple-900">
+                  <span className="font-bold">{b.key}</span> → {b.val}
+                </div>
+              </div>
+            ) : (
+              <div className="mt-2 rounded-md border border-dashed border-gray-200 p-2 text-center text-xs text-gray-400">
+                empty
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DsaTwoPointerVisual() {
+  const arr = [1, 2, 3, 4, 6]
+  return (
+    <div className="mb-6">
+      <div className="flex gap-0 overflow-x-auto">
+        {arr.map((v) => (
+          <div
+            key={v}
+            className="flex h-12 w-14 shrink-0 items-center justify-center border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800"
+          >
+            {v}
+          </div>
+        ))}
+      </div>
+      <div className="mt-2 flex items-center justify-between text-xs font-semibold text-gray-600">
+        <span>left ↑</span>
+        <span>right ↑</span>
+      </div>
+      <p className="mt-2 text-sm text-gray-700">
+        Example target = 6: start at ends (1 and 6). If sum is too big, move right left. If too small, move left right.
+      </p>
+    </div>
+  )
+}
+
+function DsaSlidingWindowVisual() {
+  const arr = [2, 1, 5, 1, 3, 2]
+  return (
+    <div className="mb-6">
+      <div className="flex gap-0 overflow-x-auto">
+        {arr.map((v, i) => {
+          const inWindow = i >= 0 && i <= 2
+          return (
+            <div
+              key={`${v}-${i}`}
+              className={[
+                'flex h-12 w-14 shrink-0 items-center justify-center border font-mono font-bold',
+                inWindow ? 'border-purple-500 bg-purple-600 text-white' : 'border-purple-300 bg-purple-50 text-purple-800',
+              ].join(' ')}
+            >
+              {v}
+            </div>
+          )
+        })}
+      </div>
+      <p className="mt-2 text-sm text-gray-700">
+        Fixed window size 3: start at indices 0–2 (sum=8), slide right by removing leftmost and adding the next element.
+      </p>
+    </div>
+  )
+}
+
+function DsaBinarySearchVisual() {
+  const arr = [1, 3, 5, 7, 9, 11, 13, 15]
+  return (
+    <div className="mb-6">
+      <div className="flex gap-0 overflow-x-auto">
+        {arr.map((v) => (
+          <div
+            key={v}
+            className="flex h-12 w-14 shrink-0 items-center justify-center border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800"
+          >
+            {v}
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-sm text-gray-700">
+        L..R is the current search space. Mid splits it in half. Compare target with mid, then discard the impossible half.
+      </p>
+    </div>
+  )
+}
+
+function DsaRecursionVisual() {
+  const frames = ['factorial(4)', 'factorial(3)', 'factorial(2)', 'factorial(1)']
+  return (
+    <div className="mb-6">
+      <div className="mb-2 text-xs font-semibold text-gray-600">Call stack grows (then unwinds)</div>
+      <div className="flex flex-col gap-2">
+        {frames.map((f, idx) => (
+          <div
+            key={f}
+            className={[
+              'rounded-lg border px-4 py-2 font-mono text-sm',
+              idx === frames.length - 1 ? 'border-purple-500 bg-purple-600 text-white' : 'border-purple-200 bg-purple-50 text-purple-900',
+            ].join(' ')}
+          >
+            {f}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DsaSortingTable() {
+  const rows = [
+    { alg: 'Bubble Sort', best: 'O(n)', avg: 'O(n²)', worst: 'O(n²)', space: 'O(1)', stable: 'Yes' },
+    { alg: 'Selection Sort', best: 'O(n²)', avg: 'O(n²)', worst: 'O(n²)', space: 'O(1)', stable: 'No' },
+    { alg: 'Insertion Sort', best: 'O(n)', avg: 'O(n²)', worst: 'O(n²)', space: 'O(1)', stable: 'Yes' },
+    { alg: 'Merge Sort', best: 'O(n log n)', avg: 'O(n log n)', worst: 'O(n log n)', space: 'O(n)', stable: 'Yes' },
+    { alg: 'Quick Sort', best: 'O(n log n)', avg: 'O(n log n)', worst: 'O(n²)', space: 'O(log n)', stable: 'No' },
+    { alg: 'Heap Sort', best: 'O(n log n)', avg: 'O(n log n)', worst: 'O(n log n)', space: 'O(1)', stable: 'No' },
+  ]
+  return (
+    <div className="mb-6 overflow-x-auto">
+      <table className="min-w-[760px] overflow-hidden rounded-lg border border-gray-200 bg-white text-sm">
+        <thead className="bg-gray-50">
+          <tr className="text-left text-gray-700">
+            <th className="px-4 py-3 font-semibold">Algorithm</th>
+            <th className="px-4 py-3 font-semibold">Best</th>
+            <th className="px-4 py-3 font-semibold">Average</th>
+            <th className="px-4 py-3 font-semibold">Worst</th>
+            <th className="px-4 py-3 font-semibold">Space</th>
+            <th className="px-4 py-3 font-semibold">Stable</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.alg} className="border-t border-gray-200">
+              <td className="px-4 py-3 font-semibold text-gray-900">{r.alg}</td>
+              <td className="px-4 py-3 text-gray-700">{r.best}</td>
+              <td className="px-4 py-3 text-gray-700">{r.avg}</td>
+              <td className="px-4 py-3 text-gray-700">{r.worst}</td>
+              <td className="px-4 py-3 text-gray-700">{r.space}</td>
+              <td className="px-4 py-3 text-gray-700">{r.stable}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function DsaBubbleSortVisual() {
+  const pass1 = [3, 1, 4, 2, 5]
+  const pass2 = [1, 3, 2, 4, 5]
+  const pass3 = [1, 2, 3, 4, 5]
+  const render = (arr) => (
+    <div className="flex gap-0 overflow-x-auto">
+      {arr.map((v, i) => (
+        <div
+          key={`${v}-${i}`}
+          className="flex h-11 w-12 shrink-0 items-center justify-center border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800"
+        >
+          {v}
+        </div>
+      ))}
+    </div>
+  )
+  return (
+    <div className="mb-6 space-y-3">
+      <div>
+        <div className="mb-1 text-xs font-semibold text-gray-600">Start</div>
+        {render([5, 3, 1, 4, 2])}
+      </div>
+      <div>
+        <div className="mb-1 text-xs font-semibold text-gray-600">Pass 1 (largest bubbles right)</div>
+        {render(pass1)}
+      </div>
+      <div>
+        <div className="mb-1 text-xs font-semibold text-gray-600">Pass 2</div>
+        {render(pass2)}
+      </div>
+      <div>
+        <div className="mb-1 text-xs font-semibold text-gray-600">Sorted</div>
+        {render(pass3)}
+      </div>
+    </div>
+  )
+}
+
+function DsaMergeSortVisual() {
+  return (
+    <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700">
+      <div className="font-semibold text-gray-900">Divide → conquer tree (conceptual)</div>
+      <div className="mt-2 space-y-2 font-mono text-xs">
+        <div>[5,3,1,4,2]</div>
+        <div className="pl-4">↳ [5,3] and [1,4,2]</div>
+        <div className="pl-8">↳ [5] [3] and [1] [4,2]</div>
+        <div className="pl-12">↳ merge: [3,5] and [1] [2,4]</div>
+        <div className="pl-8">↳ final merge: [1,2,3,4,5]</div>
+      </div>
+    </div>
+  )
+}
+
+function DsaQuickSortVisual() {
+  return (
+    <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700">
+      <div className="font-semibold text-gray-900">Pivot partition (conceptual)</div>
+      <div className="mt-2 font-mono text-xs">
+        <div>array: [5,3,1,4,2]</div>
+        <div>pivot: 4</div>
+        <div>left (&lt;4): [3,1,2] · pivot: [4] · right (&gt;4): [5]</div>
+        <div className="mt-2">recurse on left and right, then concatenate.</div>
+      </div>
+    </div>
+  )
+}
+
+function DsaBinaryTreeVisual() {
+  return (
+    <div className="mb-6 overflow-x-auto">
+      <div className="min-w-[520px]">
+        <div className="flex justify-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-md border border-purple-300 bg-purple-600 font-mono font-bold text-white">
+            1
+          </div>
+        </div>
+        <div className="mt-3 flex justify-center gap-24 text-gray-400">
+          <div className="h-6 w-px bg-gray-300" />
+          <div className="h-6 w-px bg-gray-300" />
+        </div>
+        <div className="flex justify-center gap-24">
+          <div className="flex h-12 w-12 items-center justify-center rounded-md border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800">
+            2
+          </div>
+          <div className="flex h-12 w-12 items-center justify-center rounded-md border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800">
+            3
+          </div>
+        </div>
+        <div className="mt-3 flex justify-center gap-24 text-gray-400">
+          <div className="h-6 w-px bg-gray-300" />
+          <div className="h-6 w-px bg-gray-300 opacity-0" />
+        </div>
+        <div className="flex justify-center gap-24">
+          <div className="flex gap-8">
+            <div className="flex h-11 w-11 items-center justify-center rounded-md border border-purple-300 bg-white font-mono font-bold text-purple-800">
+              4
+            </div>
+            <div className="flex h-11 w-11 items-center justify-center rounded-md border border-purple-300 bg-white font-mono font-bold text-purple-800">
+              5
+            </div>
+          </div>
+          <div className="h-11 w-11 opacity-0" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DsaHeapVisual() {
+  return (
+    <div className="mb-6 overflow-x-auto">
+      <div className="min-w-[520px]">
+        <div className="mb-3 text-sm font-semibold text-gray-900">Min-Heap (root is smallest)</div>
+        <div className="flex justify-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-md border border-purple-300 bg-purple-600 font-mono font-bold text-white">
+            1
+          </div>
+        </div>
+        <div className="mt-3 flex justify-center gap-24">
+          <div className="flex h-12 w-12 items-center justify-center rounded-md border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800">
+            3
+          </div>
+          <div className="flex h-12 w-12 items-center justify-center rounded-md border border-purple-300 bg-purple-50 font-mono font-bold text-purple-800">
+            2
+          </div>
+        </div>
+        <div className="mt-3 flex justify-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-md border border-purple-300 bg-white font-mono font-bold text-purple-800">
+            5
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DsaGraphVisual() {
+  return (
+    <div className="mb-6 overflow-x-auto">
+      <div className="min-w-[520px] rounded-lg border border-gray-200 bg-white p-4">
+        <div className="mb-2 text-sm font-semibold text-gray-900">Undirected graph (conceptual)</div>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-600 font-mono font-bold text-white">
+              A
+            </div>
+            <div className="text-xs text-gray-600">|\\</div>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-50 font-mono font-bold text-purple-800 ring-1 ring-purple-200">
+              B
+            </div>
+            <div className="text-xs text-gray-600">|</div>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-50 font-mono font-bold text-purple-800 ring-1 ring-purple-200">
+              D
+            </div>
+            <div className="text-xs text-gray-600">—</div>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-50 font-mono font-bold text-purple-800 ring-1 ring-purple-200">
+              E
+            </div>
+            <div className="text-xs text-gray-600">&nbsp;</div>
+          </div>
+        </div>
+        <div className="mt-3">
+          <div className="mb-1 text-xs font-semibold text-gray-600">Adjacency list</div>
+          <CodeBlock>{`A: [B, C, D]\nB: [A, D]\nC: [A]\nD: [A, B, E]\nE: [D]`}</CodeBlock>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DsaBfsVisual() {
+  return (
+    <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4">
+      <div className="mb-2 text-sm font-semibold text-gray-900">BFS explores level by level</div>
+      <div className="font-mono text-xs text-gray-700">
+        <div>Level 0: [1]</div>
+        <div>Level 1: [2, 3]</div>
+        <div>Level 2: [4, 5]</div>
+        <div className="mt-2">Visit order: 1 → 2 → 3 → 4 → 5</div>
+      </div>
+    </div>
+  )
+}
+
+function DsaDfsVisual() {
+  return (
+    <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4">
+      <div className="mb-2 text-sm font-semibold text-gray-900">DFS goes deep then backtracks</div>
+      <div className="font-mono text-xs text-gray-700">
+        <div>Path example: 1 → 2 → 4 → backtrack → 5 → backtrack → 3</div>
+        <div className="mt-2">Uses a stack (explicit) or recursion (call stack).</div>
+      </div>
+    </div>
+  )
+}
+
+function DsaDpVisual() {
+  return (
+    <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4">
+      <div className="mb-2 text-sm font-semibold text-gray-900">DP avoids repeated subproblems</div>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
+          <div className="mb-1 text-xs font-semibold text-gray-600">Without DP (recompute)</div>
+          <div className="font-mono text-[11px] text-gray-700">
+            fib(5) → fib(4) + fib(3)
+            <br />
+            fib(4) → fib(3) + fib(2)
+            <br />
+            fib(3) computed multiple times…
+          </div>
+        </div>
+        <div className="rounded-md border border-purple-200 bg-purple-50 p-3">
+          <div className="mb-1 text-xs font-semibold text-purple-800">With DP (memo/table)</div>
+          <div className="font-mono text-[11px] text-purple-900">
+            memo = {'{'}0:0, 1:1{'}'}
+            <br />
+            fib(2)=1 store
+            <br />
+            fib(3)=2 store
+            <br />
+            fib(4)=3 store
+            <br />
+            fib(5)=5 (no repeats)
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DsaGreedyVisual() {
+  return (
+    <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4">
+      <div className="mb-2 text-sm font-semibold text-gray-900">Greedy: take best local choice</div>
+      <div className="text-sm text-gray-700">
+        Greedy commits to a choice at each step (no backtracking). It works only when the problem has the greedy-choice
+        property.
+      </div>
+    </div>
+  )
+}
+
+function DsaBacktrackingVisual() {
+  const steps = ['choose', 'explore', 'undo', 'try next']
+  return (
+    <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4">
+      <div className="mb-2 text-sm font-semibold text-gray-900">Backtracking template</div>
+      <div className="flex flex-wrap gap-2">
+        {steps.map((s) => (
+          <div
+            key={s}
+            className="rounded-full border border-purple-200 bg-purple-50 px-3 py-1 font-mono text-xs font-semibold text-purple-800"
+          >
+            {s}
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-sm text-gray-700">
+        Build a candidate step-by-step. If it can’t lead to a valid solution, undo the last choice and try the next option.
+      </p>
+    </div>
+  )
+}
+
+function DsaTrieVisual() {
+  return (
+    <div className="mb-6 overflow-x-auto">
+      <div className="min-w-[560px] rounded-lg border border-gray-200 bg-white p-4">
+        <div className="mb-2 text-sm font-semibold text-gray-900">Trie for: cat, car, card, care</div>
+        <div className="font-mono text-xs text-gray-700">
+          root
+          <br />
+          └─ c
+          <br />
+          &nbsp;&nbsp;└─ a
+          <br />
+          &nbsp;&nbsp;&nbsp;&nbsp;├─ t (*)<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;└─ r (*)<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ d (*)<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ e (*)<br />
+          <br />
+          (*) = end of word
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ComplexityBlock({ timeLines, spaceLine }) {
+  return (
+    <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="rounded-lg border border-gray-200 bg-white p-4">
+        <div className="mb-2 text-sm font-bold text-gray-900">Time Complexity</div>
+        <ul className="list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          {timeLines.map((t) => (
+            <li key={t}>{t}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="rounded-lg border border-gray-200 bg-white p-4">
+        <div className="mb-2 text-sm font-bold text-gray-900">Space Complexity</div>
+        <p className="text-sm text-gray-800">{spaceLine}</p>
+      </div>
+    </div>
+  )
+}
+
+function DsaConcept({ title, right, children, openId, setOpenId, id }) {
+  return (
+    <AccordionRow
+      id={id}
+      openId={openId}
+      setOpenId={setOpenId}
+      badge="DSA"
+      badgeClass="bg-indigo-800"
+      title={title}
+      right={right}
+    >
+      {children}
+    </AccordionRow>
+  )
+}
+
+function DSACurriculum({ openId, setOpenId }) {
+  const [selectedLang, setSelectedLang] = useState('python')
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-8">
+        <div className="text-sm font-bold text-gray-900">Language selector</div>
+        <p className="mt-1 text-sm text-gray-600">
+          Switch code instantly. Explanations stay the same — only code blocks change.
+        </p>
+        <div className="mt-4">
+          <DsaLanguageSelector selectedLang={selectedLang} setSelectedLang={setSelectedLang} />
+        </div>
+      </div>
+
+      {/* CONCEPTS 1–5 — complete content */}
+      <DsaConcept
+        id="dsa-1-arrays"
+        title="Arrays"
+        right="Indexing, insert/delete, traversal"
+        openId={openId}
+        setOpenId={setOpenId}
+      >
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          An array is a collection of elements stored in continuous (next to each other) memory locations. Each element has a
+          numbered position called an index. Indexing starts at 0, not 1.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">THINK OF IT LIKE:</p>
+        <p className="mb-6">
+          A row of numbered mailboxes in an apartment building. Box 0, Box 1, Box 2... each holds exactly one item. To get item
+          at position 3, go directly to box 3. No searching needed — direct access.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaArrayVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Create array\narr = [10, 20, 30, 40, 50]\n\n# Access — O(1)\nprint(arr[0])    # 10 — first element\nprint(arr[-1])   # 50 — last element\n\n# Update\narr[2] = 99      # arr = [10, 20, 99, 40, 50]\n\n# Insert at end — O(1)\narr.append(60)\n\n# Insert at position — O(n) shifts elements\narr.insert(1, 15)\n\n# Delete by value — O(n)\narr.remove(20)\n\n# Delete by index — O(n)\ndel arr[0]\n\n# Slice — get portion\nprint(arr[1:3])  # elements at index 1 and 2\n\n# Length\nprint(len(arr))  # number of elements\n\n# Loop through\nfor i, val in enumerate(arr):\n    print(f\"Index {i}: {val}\")\n\n# Common operations\narr.sort()        # sort in place\narr.reverse()     # reverse in place\narr2 = arr.copy() # copy array`,
+            java: `import java.util.*;\n\npublic class ArraysDemo {\n  public static void main(String[] args) {\n    // Fixed size array\n    int[] arr = {10, 20, 30, 40, 50};\n\n    // Access — O(1)\n    System.out.println(arr[0]);\n    System.out.println(arr[arr.length - 1]);\n\n    // Update\n    arr[2] = 99;\n\n    // Dynamic array — ArrayList\n    ArrayList<Integer> list = new ArrayList<>();\n    list.add(10);     // add to end\n    list.add(1, 15);  // insert at index 1\n    list.remove(0);   // remove by index\n    list.get(0);      // access by index\n    list.size();      // length\n    Collections.sort(list);  // sort\n\n    // Loop through array\n    for (int i = 0; i < arr.length; i++) {\n      System.out.println(\"Index \" + i + \": \" + arr[i]);\n    }\n\n    // Enhanced for loop\n    for (int val : arr) {\n      System.out.println(val);\n    }\n\n    Arrays.sort(arr);\n    Arrays.copyOf(arr, arr.length);\n    Arrays.fill(arr, 0);\n  }\n}`,
+            c: `#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void* a, const void* b) {\n  return (*(int*)a - *(int*)b);\n}\n\nint main(void) {\n  // Fixed size array\n  int arr[] = {10, 20, 30, 40, 50};\n  int size = 5;\n\n  // Access — O(1)\n  printf(\"%d\\n\", arr[0]);\n  printf(\"%d\\n\", arr[4]);\n\n  // Update\n  arr[2] = 99;\n\n  // Get length\n  int len = (int)(sizeof(arr) / sizeof(arr[0]));\n\n  // Loop through\n  for (int i = 0; i < len; i++) {\n    printf(\"Index %d: %d\\n\", i, arr[i]);\n  }\n\n  // Dynamic array with malloc\n  int* dynamic = (int*)malloc(5 * sizeof(int));\n  if (!dynamic) return 1;\n  dynamic[0] = 10;\n  dynamic[1] = 20;\n  free(dynamic);  // MUST free memory\n\n  // Sort using qsort\n  qsort(arr, size, sizeof(int), compare);\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n  // Dynamic array — vector\n  vector<int> arr = {10, 20, 30, 40, 50};\n\n  // Access — O(1)\n  cout << arr[0] << \"\\n\";\n  cout << arr.back() << \"\\n\";\n  cout << arr.front() << \"\\n\";\n\n  // Update\n  arr[2] = 99;\n\n  // Insert at end — O(1)\n  arr.push_back(60);\n\n  // Insert at position — O(n)\n  arr.insert(arr.begin() + 1, 15);\n\n  // Delete last — O(1)\n  arr.pop_back();\n\n  // Delete at position — O(n)\n  arr.erase(arr.begin() + 2);\n\n  cout << arr.size() << \"\\n\";\n\n  sort(arr.begin(), arr.end());\n  reverse(arr.begin(), arr.end());\n\n  for (int i = 0; i < (int)arr.size(); i++) {\n    cout << \"Index \" << i << \": \" << arr[i] << \"\\n\";\n  }\n\n  for (int val : arr) {\n    cout << val << \" \";\n  }\n  cout << \"\\n\";\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Access: O(1) — go directly to index', 'Search: O(n) — may check every element', 'Insert: O(n) — shift elements to make room', 'Delete: O(n) — shift elements to fill gap']}
+          spaceLine="O(n)"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>When you need fast access by position (O(1))</li>
+          <li>When size is fixed or known</li>
+          <li>When you need to iterate through all elements</li>
+          <li>Most common in interview problems</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Easy: Two Sum (#1), Best Time to Buy and Sell Stock (#121), Contains Duplicate (#217), Maximum Subarray (#53), Move Zeroes (#283)</li>
+          <li>Medium: 3Sum (#15), Product of Array Except Self (#238), Search in Rotated Sorted Array (#33), Find Minimum in Rotated Sorted Array (#153), Container With Most Water (#11)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="arrays" />
+      </DsaConcept>
+
+      <DsaConcept
+        id="dsa-2-strings"
+        title="Strings"
+        right="Immutability, palindrome, frequency"
+        openId={openId}
+        setOpenId={setOpenId}
+      >
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A string is a sequence of characters stored as an array of characters. In most languages, strings are immutable — you
+          cannot change individual characters; you create a new string instead.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">THINK OF IT LIKE:</p>
+        <p className="mb-6">
+          A necklace of beads where each bead is a letter. &quot;Hello&quot; = H-e-l-l-o, five beads in order.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaStringVisual />
+        <p className="mb-3 font-semibold text-gray-900">IMPORTANT CONCEPT — IMMUTABILITY:</p>
+        <p className="mb-6">
+          In Python and Java, strings cannot be changed in place. That&apos;s why doing <code className="rounded bg-gray-100 px-1">+=</code> inside a loop can become O(n²).
+          Prefer <code className="rounded bg-gray-100 px-1">join()</code> (Python) or <code className="rounded bg-gray-100 px-1">StringBuilder</code> (Java).
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `s = "hello"\nprint(s[0])        # access\nprint(s[1:4])      # slice\nprint(s[::-1])     # reverse\n\n# Palindrome check\n\ndef is_pal(s):\n    left, right = 0, len(s) - 1\n    while left < right:\n        if s[left] != s[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nprint(is_pal("racecar"))\n\n# Count characters\nfreq = {}\nfor ch in s:\n    freq[ch] = freq.get(ch, 0) + 1\nprint(freq)\n\n# Find substring\nprint(s.find("ell"))\n\n# Replace, split, join\nprint(s.replace("h", "H"))\nparts = "a,b,c".split(",")\nprint("-".join(parts))`,
+            java: `import java.util.*;\n\npublic class StringDemo {\n  static boolean isPal(String s) {\n    int l = 0, r = s.length() - 1;\n    while (l < r) {\n      if (s.charAt(l) != s.charAt(r)) return false;\n      l++; r--;\n    }\n    return true;\n  }\n\n  public static void main(String[] args) {\n    String s = \"hello\";\n    System.out.println(s.charAt(0));\n    System.out.println(s.substring(1, 4));\n\n    String reversed = new StringBuilder(s).reverse().toString();\n    System.out.println(reversed);\n    System.out.println(isPal(\"racecar\"));\n\n    // Count characters\n    Map<Character, Integer> freq = new HashMap<>();\n    for (char c : s.toCharArray()) {\n      freq.put(c, freq.getOrDefault(c, 0) + 1);\n    }\n    System.out.println(freq);\n\n    System.out.println(s.indexOf(\"ell\"));\n    System.out.println(s.replace(\"h\", \"H\"));\n\n    String[] parts = \"a,b,c\".split(\",\");\n    System.out.println(String.join(\"-\", parts));\n  }\n}`,
+            c: `#include <stdio.h>\n#include <string.h>\n#include <ctype.h>\n\nint is_pal(const char *s) {\n  int l = 0;\n  int r = (int)strlen(s) - 1;\n  while (l < r) {\n    if (s[l] != s[r]) return 0;\n    l++; r--;\n  }\n  return 1;\n}\n\nint main(void) {\n  char s[] = \"hello\";\n  printf(\"%c\\n\", s[0]);\n\n  // Reverse (in-place for char array)\n  int n = (int)strlen(s);\n  for (int i = 0; i < n / 2; i++) {\n    char tmp = s[i];\n    s[i] = s[n - 1 - i];\n    s[n - 1 - i] = tmp;\n  }\n  printf(\"%s\\n\", s);\n\n  printf(\"%d\\n\", is_pal(\"racecar\"));\n\n  // Find substring\n  const char *t = strstr(\"hello\", \"ell\");\n  printf(\"%d\\n\", t ? (int)(t - \"hello\") : -1);\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nbool isPal(const string& s) {\n  int l = 0, r = (int)s.size() - 1;\n  while (l < r) {\n    if (s[l] != s[r]) return false;\n    l++; r--;\n  }\n  return true;\n}\n\nint main() {\n  string s = \"hello\";\n  cout << s[0] << \"\\n\";\n  cout << s.substr(1, 3) << \"\\n\";\n\n  string rev = s;\n  reverse(rev.begin(), rev.end());\n  cout << rev << \"\\n\";\n\n  cout << boolalpha << isPal(\"racecar\") << \"\\n\";\n\n  unordered_map<char,int> freq;\n  for (char c : s) freq[c]++;\n\n  cout << s.find(\"ell\") << \"\\n\";\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={[
+            'Access character: O(1)',
+            'Search substring: O(n·m) naive, O(n) with KMP',
+            'Concatenation: O(n) — creates a new string',
+          ]}
+          spaceLine="O(n) in general (new strings / frequency maps); O(1) extra for two-pointer palindrome check"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Palindrome checks and two-pointer scanning</li>
+          <li>Frequency counting (anagrams, uniqueness)</li>
+          <li>Substring / pattern problems (sliding window)</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Easy: Valid Palindrome, Reverse String, Valid Anagram, Longest Common Prefix</li>
+          <li>Medium: Longest Substring Without Repeating, Group Anagrams, Longest Palindromic Substring</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="strings" />
+      </DsaConcept>
+
+      <DsaConcept
+        id="dsa-3-linked-list"
+        title="Linked List"
+        right="Nodes, pointers, reverse, cycle"
+        openId={openId}
+        setOpenId={setOpenId}
+      >
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A linked list is a sequence of nodes where each node contains data AND a pointer to the next node. Unlike arrays,
+          nodes are NOT stored next to each other in memory — pointers connect them.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">THINK OF IT LIKE:</p>
+        <p className="mb-6">
+          A treasure hunt: each clue (node) contains the treasure piece (data) and the location of the next clue (pointer). You
+          must follow the chain — you cannot jump directly to position 3.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaLinkedListVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `class Node:\n    def __init__(self, val, nxt=None):\n        self.val = val\n        self.next = nxt\n\n# Create: 10 -> 20 -> 30\nhead = Node(10, Node(20, Node(30)))\n\n# Traverse\ncur = head\nwhile cur:\n    print(cur.val)\n    cur = cur.next\n\n# Reverse linked list\n\ndef reverse(head):\n    prev = None\n    cur = head\n    while cur:\n        nxt = cur.next\n        cur.next = prev\n        prev = cur\n        cur = nxt\n    return prev\n\n# Cycle detection (Floyd)\n\ndef has_cycle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False`,
+            java: `class Node {\n  int val;\n  Node next;\n  Node(int v) { val = v; }\n}\n\npublic class LinkedListDemo {\n  static Node reverse(Node head) {\n    Node prev = null, cur = head;\n    while (cur != null) {\n      Node nxt = cur.next;\n      cur.next = prev;\n      prev = cur;\n      cur = nxt;\n    }\n    return prev;\n  }\n\n  static boolean hasCycle(Node head) {\n    Node slow = head, fast = head;\n    while (fast != null && fast.next != null) {\n      slow = slow.next;\n      fast = fast.next.next;\n      if (slow == fast) return true;\n    }\n    return false;\n  }\n}`,
+            c: `#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n  int val;\n  struct Node* next;\n} Node;\n\nNode* newNode(int v) {\n  Node* n = (Node*)malloc(sizeof(Node));\n  n->val = v;\n  n->next = NULL;\n  return n;\n}\n\nNode* reverse(Node* head) {\n  Node* prev = NULL;\n  Node* cur = head;\n  while (cur) {\n    Node* nxt = cur->next;\n    cur->next = prev;\n    prev = cur;\n    cur = nxt;\n  }\n  return prev;\n}\n\nint hasCycle(Node* head) {\n  Node* slow = head;\n  Node* fast = head;\n  while (fast && fast->next) {\n    slow = slow->next;\n    fast = fast->next->next;\n    if (slow == fast) return 1;\n  }\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Node {\n  int val;\n  Node* next;\n  Node(int v) : val(v), next(nullptr) {}\n};\n\nNode* reverse(Node* head) {\n  Node* prev = nullptr;\n  Node* cur = head;\n  while (cur) {\n    Node* nxt = cur->next;\n    cur->next = prev;\n    prev = cur;\n    cur = nxt;\n  }\n  return prev;\n}\n\nbool hasCycle(Node* head) {\n  Node* slow = head;\n  Node* fast = head;\n  while (fast && fast->next) {\n    slow = slow->next;\n    fast = fast->next->next;\n    if (slow == fast) return true;\n  }\n  return false;\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={[
+            'Access by index: O(n)',
+            'Insert at head: O(1)',
+            'Insert at tail: O(n) unless tail tracked',
+            'Delete: O(n) to find, O(1) to unlink',
+          ]}
+          spaceLine="O(1) extra for iterative reverse/cycle detection (excluding the nodes themselves)"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>When you need frequent insert/delete near the head</li>
+          <li>When you don’t need random index access</li>
+          <li>To model pointer-based structures (LRU caches, adjacency lists)</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Easy: Reverse Linked List, Merge Two Sorted Lists, Linked List Cycle, Remove Nth Node</li>
+          <li>Medium: Add Two Numbers, Reorder List</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="linkedList" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-4-stack" title="Stack" right="LIFO, push/pop, parentheses" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A stack follows LIFO — Last In, First Out. The last element added is the first one removed. You add/remove only from
+          the top.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaStackVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Stack using list\nstack = []\nstack.append(10)  # push\nstack.append(20)\nprint(stack[-1])  # peek\nstack.pop()       # pop\n\n# Valid parentheses\n\ndef is_valid(s):\n    st = []\n    pairs = {')':'(',']':'[','}':'{'}\n    for ch in s:\n        if ch in '([{':\n            st.append(ch)\n        else:\n            if not st or st[-1] != pairs[ch]:\n                return False\n            st.pop()\n    return len(st) == 0`,
+            java: `import java.util.*;\n\npublic class StackDemo {\n  static boolean isValid(String s) {\n    Deque<Character> st = new ArrayDeque<>();\n    Map<Character, Character> pairs = Map.of(')', '(', ']', '[', '}', '{');\n    for (char ch : s.toCharArray()) {\n      if (ch == '(' || ch == '[' || ch == '{') st.push(ch);\n      else {\n        if (st.isEmpty() || st.peek() != pairs.get(ch)) return false;\n        st.pop();\n      }\n    }\n    return st.isEmpty();\n  }\n}`,
+            c: `#include <stdio.h>\n\nint main(void) {\n  int stack[100];\n  int top = -1;\n\n  // push\n  stack[++top] = 10;\n  stack[++top] = 20;\n\n  // peek\n  printf(\"%d\\n\", stack[top]);\n\n  // pop\n  top--;\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n  stack<int> st;\n  st.push(10);\n  st.push(20);\n  cout << st.top() << \"\\n\";\n  st.pop();\n}\n`,
+          }}
+        />
+        <ComplexityBlock timeLines={['push: O(1)', 'pop: O(1)', 'peek: O(1)']} spaceLine="O(n) for stored items" />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Balanced parentheses, expression evaluation</li>
+          <li>Undo/back history, DFS (explicit stack)</li>
+          <li>Monotonic stack problems (Daily Temperatures)</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Valid Parentheses, Min Stack, Daily Temperatures</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="stack" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-5-queue" title="Queue" right="FIFO, enqueue/dequeue, BFS" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A queue follows FIFO — First In, First Out. Add to the back (enqueue) and remove from the front (dequeue).
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaQueueVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `from collections import deque\n\nq = deque()\nq.append(10)       # enqueue\nq.append(20)\nprint(q[0])        # peek front\nprint(q.popleft()) # dequeue -> 10`,
+            java: `import java.util.*;\n\npublic class QueueDemo {\n  public static void main(String[] args) {\n    Deque<Integer> q = new ArrayDeque<>();\n    q.addLast(10);\n    q.addLast(20);\n    System.out.println(q.peekFirst());\n    System.out.println(q.removeFirst());\n  }\n}`,
+            c: `#include <stdio.h>\n\nint main(void) {\n  int q[5];\n  int head = 0, tail = 0, size = 0;\n\n  // enqueue\n  q[tail] = 10; tail = (tail + 1) % 5; size++;\n  q[tail] = 20; tail = (tail + 1) % 5; size++;\n\n  // dequeue\n  int front = q[head]; head = (head + 1) % 5; size--;\n  printf(\"%d\\n\", front);\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n  queue<int> q;\n  q.push(10);\n  q.push(20);\n  cout << q.front() << \"\\n\";\n  q.pop();\n}\n`,
+          }}
+        />
+        <ComplexityBlock timeLines={['enqueue: O(1)', 'dequeue: O(1)', 'peek: O(1)']} spaceLine="O(n) for stored items" />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>BFS traversal (trees/graphs)</li>
+          <li>Task scheduling, producer/consumer buffers</li>
+          <li>Sliding window with deque optimizations</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Number of Islands (BFS), Rotting Oranges, Level Order Traversal</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="queue" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-6-hashmap" title="Hash Map" right="Keys, buckets, collisions" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A hash map (dictionary) stores key-value pairs. A hash function turns the key into a bucket index, so lookups are O(1)
+          on average.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">THINK OF IT LIKE:</p>
+        <p className="mb-4">
+          A magical library catalog: give it a title (key) and it instantly tells you which shelf (bucket) to go to for the book
+          (value).
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaHashMapVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Create\nmp = {\"name\": \"Sai\", \"age\": 25}\n\n# Get\nprint(mp[\"name\"])         # Sai\nprint(mp.get(\"gpa\", \"N/A\"))\n\n# Put / update\nmp[\"age\"] = 26\nmp[\"gpa\"] = 3.9\n\n# Delete\nmp.pop(\"age\")\n\n# Check existence\nif \"name\" in mp:\n    print(\"has name\")\n\n# Iterate\nfor k, v in mp.items():\n    print(k, v)\n\n# Frequency pattern\narr = [1, 2, 2, 3]\nfreq = {}\nfor x in arr:\n    freq[x] = freq.get(x, 0) + 1\n\n# Two Sum\n\ndef two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        need = target - num\n        if need in seen:\n            return [seen[need], i]\n        seen[num] = i\n    return []`,
+            java: `import java.util.*;\n\npublic class HashMapDemo {\n  public static int[] twoSum(int[] nums, int target) {\n    Map<Integer, Integer> seen = new HashMap<>();\n    for (int i = 0; i < nums.length; i++) {\n      int need = target - nums[i];\n      if (seen.containsKey(need)) return new int[]{seen.get(need), i};\n      seen.put(nums[i], i);\n    }\n    return new int[]{};\n  }\n\n  public static void main(String[] args) {\n    Map<String, Object> mp = new HashMap<>();\n    mp.put(\"name\", \"Sai\");\n    mp.put(\"age\", 25);\n    System.out.println(mp.get(\"name\"));\n    System.out.println(mp.getOrDefault(\"gpa\", \"N/A\"));\n\n    mp.remove(\"age\");\n\n    int[] ans = twoSum(new int[]{2,7,11,15}, 9);\n    System.out.println(Arrays.toString(ans));\n  }\n}`,
+            c: `#include <stdio.h>\n\n// C does not have a built-in hash map.\n// In interviews, you'd either:\n// 1) implement a hash table, or\n// 2) use sorting + two pointers.\n\nint main(void) {\n  printf(\"C has no built-in hashmap. Use your own hashtable or sort+two pointers.\\n\");\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nvector<int> twoSum(const vector<int>& nums, int target) {\n  unordered_map<int,int> seen;\n  for (int i = 0; i < (int)nums.size(); i++) {\n    int need = target - nums[i];\n    if (seen.count(need)) return {seen[need], i};\n    seen[nums[i]] = i;\n  }\n  return {};\n}\n\nint main() {\n  unordered_map<string, int> mp;\n  mp[\"age\"] = 25;\n  cout << mp[\"age\"] << \"\\n\";\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['get/put/delete average: O(1)', 'worst case: O(n) if many collisions (rare)', 'frequency counting: O(n)']}
+          spaceLine="O(n)"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Fast existence checks (seen set)</li>
+          <li>Frequency counting</li>
+          <li>Indexing records by id</li>
+          <li>Two Sum / complements</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Two Sum (#1), Group Anagrams, Top K Frequent Elements (#347), Longest Consecutive Sequence (#128)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="hashMap" />
+      </DsaConcept>
+
+      <DsaConcept
+        id="dsa-7-two-pointers"
+        title="Two Pointer Technique"
+        right="Pairs, palindromes, fast/slow"
+        openId={openId}
+        setOpenId={setOpenId}
+      >
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Two pointers uses two indices moving through an array/string (toward each other or same direction) to solve problems in
+          O(n) instead of O(n²).
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaTwoPointerVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Sorted pair sum\n\ndef has_pair(arr, target):\n    left, right = 0, len(arr) - 1\n    while left < right:\n        s = arr[left] + arr[right]\n        if s == target:\n            return True\n        if s < target:\n            left += 1\n        else:\n            right -= 1\n    return False\n\n# Palindrome\n\ndef is_pal(s):\n    l, r = 0, len(s) - 1\n    while l < r:\n        if s[l] != s[r]:\n            return False\n        l += 1; r -= 1\n    return True`,
+            java: `public class TwoPointers {\n  static boolean hasPair(int[] arr, int target) {\n    int l = 0, r = arr.length - 1;\n    while (l < r) {\n      int s = arr[l] + arr[r];\n      if (s == target) return true;\n      if (s < target) l++; else r--;\n    }\n    return false;\n  }\n\n  static boolean isPal(String s) {\n    int l = 0, r = s.length() - 1;\n    while (l < r) {\n      if (s.charAt(l) != s.charAt(r)) return false;\n      l++; r--;\n    }\n    return true;\n  }\n}`,
+            c: `#include <stdio.h>\n\nint has_pair(int *arr, int n, int target) {\n  int l = 0, r = n - 1;\n  while (l < r) {\n    int s = arr[l] + arr[r];\n    if (s == target) return 1;\n    if (s < target) l++; else r--;\n  }\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nbool hasPair(const vector<int>& a, int target) {\n  int l = 0, r = (int)a.size() - 1;\n  while (l < r) {\n    int s = a[l] + a[r];\n    if (s == target) return true;\n    if (s < target) l++; else r--;\n  }\n  return false;\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Typical: O(n) single pass', 'Requires sorted input for pair-sum variant (or sort first: O(n log n))']}
+          spaceLine="O(1)"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Sorted array pair problems</li>
+          <li>Palindrome checks</li>
+          <li>Remove duplicates / fast-slow pointers</li>
+          <li>Container With Most Water</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Container With Most Water (#11), 3Sum (#15), Valid Palindrome (#125), Remove Duplicates from Sorted Array (#26)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="twoPointer" />
+      </DsaConcept>
+
+      <DsaConcept
+        id="dsa-8-sliding-window"
+        title="Sliding Window"
+        right="Subarrays/substrings, fixed/variable"
+        openId={openId}
+        setOpenId={setOpenId}
+      >
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Sliding window solves subarray/substring problems by maintaining a moving window and updating it incrementally instead
+          of recomputing from scratch each time.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaSlidingWindowVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Fixed-size window: max sum of size k\n\ndef max_sum(arr, k):\n    window = sum(arr[:k])\n    best = window\n    for i in range(k, len(arr)):\n        window += arr[i] - arr[i - k]\n        best = max(best, window)\n    return best\n\n# Variable-size window: longest substring without repeat\n\ndef longest_unique(s):\n    seen = {}\n    left = 0\n    best = 0\n    for right, ch in enumerate(s):\n        if ch in seen and seen[ch] >= left:\n            left = seen[ch] + 1\n        seen[ch] = right\n        best = max(best, right - left + 1)\n    return best`,
+            java: `import java.util.*;\n\npublic class SlidingWindow {\n  static int maxSum(int[] arr, int k) {\n    int window = 0;\n    for (int i = 0; i < k; i++) window += arr[i];\n    int best = window;\n    for (int i = k; i < arr.length; i++) {\n      window += arr[i] - arr[i - k];\n      best = Math.max(best, window);\n    }\n    return best;\n  }\n\n  static int longestUnique(String s) {\n    Map<Character, Integer> last = new HashMap<>();\n    int left = 0, best = 0;\n    for (int right = 0; right < s.length(); right++) {\n      char ch = s.charAt(right);\n      if (last.containsKey(ch) && last.get(ch) >= left) left = last.get(ch) + 1;\n      last.put(ch, right);\n      best = Math.max(best, right - left + 1);\n    }\n    return best;\n  }\n}`,
+            c: `#include <stdio.h>\n\nint max_sum(int *arr, int n, int k) {\n  int window = 0;\n  for (int i = 0; i < k; i++) window += arr[i];\n  int best = window;\n  for (int i = k; i < n; i++) {\n    window += arr[i] - arr[i - k];\n    if (window > best) best = window;\n  }\n  return best;\n}\n\nint main(void) {\n  int a[] = {2,1,5,1,3,2};\n  printf(\"%d\\n\", max_sum(a, 6, 3));\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint maxSum(const vector<int>& a, int k) {\n  int window = 0;\n  for (int i = 0; i < k; i++) window += a[i];\n  int best = window;\n  for (int i = k; i < (int)a.size(); i++) {\n    window += a[i] - a[i - k];\n    best = max(best, window);\n  }\n  return best;\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Fixed window: O(n)', 'Variable window with hashmap: O(n) average']}
+          spaceLine="O(1) fixed window; O(k) / O(Σ) for hashmap in variable windows"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Max/min sum of subarray of size k</li>
+          <li>Longest substring with constraint (unique, at most k distinct)</li>
+          <li>Minimum window substring</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Longest Substring Without Repeating (#3), Minimum Window Substring (#76), Find All Anagrams (#438)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="slidingWindow" />
+      </DsaConcept>
+
+      <DsaConcept
+        id="dsa-9-binary-search"
+        title="Binary Search"
+        right="Exact match, bounds, rotated"
+        openId={openId}
+        setOpenId={setOpenId}
+      >
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Binary search finds a target in a sorted array by repeatedly halving the search space. It runs in O(log n).
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaBinarySearchVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Exact match\n\ndef binary_search(arr, target):\n    lo, hi = 0, len(arr) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if arr[mid] == target:\n            return mid\n        if arr[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n\n# Leftmost (lower bound)\n\ndef lower_bound(arr, target):\n    lo, hi = 0, len(arr)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if arr[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid\n    return lo`,
+            java: `public class BinarySearch {\n  static int search(int[] arr, int target) {\n    int lo = 0, hi = arr.length - 1;\n    while (lo <= hi) {\n      int mid = (lo + hi) / 2;\n      if (arr[mid] == target) return mid;\n      if (arr[mid] < target) lo = mid + 1;\n      else hi = mid - 1;\n    }\n    return -1;\n  }\n\n  static int lowerBound(int[] arr, int target) {\n    int lo = 0, hi = arr.length;\n    while (lo < hi) {\n      int mid = (lo + hi) / 2;\n      if (arr[mid] < target) lo = mid + 1;\n      else hi = mid;\n    }\n    return lo;\n  }\n}`,
+            c: `#include <stdio.h>\n\nint binary_search(int *arr, int n, int target) {\n  int lo = 0, hi = n - 1;\n  while (lo <= hi) {\n    int mid = (lo + hi) / 2;\n    if (arr[mid] == target) return mid;\n    if (arr[mid] < target) lo = mid + 1;\n    else hi = mid - 1;\n  }\n  return -1;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n  vector<int> a = {1,3,5,7,9};\n  auto it = lower_bound(a.begin(), a.end(), 7);\n  cout << (it - a.begin()) << \"\\n\";\n}\n`,
+          }}
+        />
+        <ComplexityBlock timeLines={['Time: O(log n)', 'Works only on sorted arrays or monotonic “answer” spaces']} spaceLine="O(1)" />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Sorted array lookups</li>
+          <li>Finding first/last occurrence (bounds)</li>
+          <li>Binary search on answer (minimum feasible)</li>
+          <li>Rotated sorted array variations</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Binary Search (#704), First/Last Position (#34), Search in Rotated Sorted Array (#33), Find Min Rotated (#153)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="binarySearch" />
+      </DsaConcept>
+
+      <DsaConcept
+        id="dsa-10-recursion"
+        title="Recursion"
+        right="Base case, call stack, divide & conquer"
+        openId={openId}
+        setOpenId={setOpenId}
+      >
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Recursion is when a function calls itself to solve a smaller version of the same problem. Every recursive solution
+          needs a base case (stop) and a recursive case (shrink input).
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaRecursionVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\n# Power: x^n\n\ndef power(x, n):\n    if n == 0:\n        return 1\n    return x * power(x, n - 1)`,
+            java: `public class Recursion {\n  static int fact(int n) {\n    if (n <= 1) return 1;\n    return n * fact(n - 1);\n  }\n\n  static long power(long x, int n) {\n    if (n == 0) return 1;\n    return x * power(x, n - 1);\n  }\n}`,
+            c: `#include <stdio.h>\n\nint fact(int n) {\n  if (n <= 1) return 1;\n  return n * fact(n - 1);\n}\n\nint main(void) {\n  printf(\"%d\\n\", fact(5));\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint fact(int n) {\n  if (n <= 1) return 1;\n  return n * fact(n - 1);\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Often O(n) for linear recursion (factorial)', 'Can be exponential without memoization (naive Fibonacci)']}
+          spaceLine="O(depth) due to call stack"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Tree traversals (natural recursion)</li>
+          <li>Divide and conquer</li>
+          <li>Backtracking (choices + undo)</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Maximum Depth of Binary Tree (#104), Subsets (#78), Permutations (#46)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="recursion" />
+      </DsaConcept>
+
+      <DsaConcept
+        id="dsa-11-sorting"
+        title="Sorting Algorithms"
+        right="Built-in sort, merge sort, quick sort"
+        openId={openId}
+        setOpenId={setOpenId}
+      >
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Sorting arranges elements in ascending/descending order. In interviews, you must know built-in sorting and understand
+          merge sort and quick sort at a high level.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL — COMPARISON TABLE:</p>
+        <DsaSortingTable />
+        <p className="mb-3 font-semibold text-gray-900">VISUAL — BUBBLE SORT:</p>
+        <DsaBubbleSortVisual />
+        <p className="mb-3 font-semibold text-gray-900">VISUAL — MERGE SORT:</p>
+        <DsaMergeSortVisual />
+        <p className="mb-3 font-semibold text-gray-900">VISUAL — QUICK SORT:</p>
+        <DsaQuickSortVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Built-in sort (Timsort)\narr = [5, 3, 1, 4, 2]\narr.sort()                # in-place\narr2 = sorted(arr)        # returns new list\n\n# Merge sort\n\ndef merge_sort(a):\n    if len(a) <= 1:\n        return a\n    mid = len(a) // 2\n    left = merge_sort(a[:mid])\n    right = merge_sort(a[mid:])\n    i = j = 0\n    out = []\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            out.append(left[i]); i += 1\n        else:\n            out.append(right[j]); j += 1\n    out.extend(left[i:])\n    out.extend(right[j:])\n    return out\n\n# Quick sort (simple)\n\ndef quick_sort(a):\n    if len(a) <= 1:\n        return a\n    pivot = a[len(a) // 2]\n    left = [x for x in a if x < pivot]\n    mid = [x for x in a if x == pivot]\n    right = [x for x in a if x > pivot]\n    return quick_sort(left) + mid + quick_sort(right)`,
+            java: `import java.util.*;\n\npublic class SortingDemo {\n  static void mergeSort(int[] a) {\n    if (a.length <= 1) return;\n    int mid = a.length / 2;\n    int[] left = Arrays.copyOfRange(a, 0, mid);\n    int[] right = Arrays.copyOfRange(a, mid, a.length);\n    mergeSort(left);\n    mergeSort(right);\n    int i = 0, j = 0, k = 0;\n    while (i < left.length && j < right.length) {\n      if (left[i] <= right[j]) a[k++] = left[i++];\n      else a[k++] = right[j++];\n    }\n    while (i < left.length) a[k++] = left[i++];\n    while (j < right.length) a[k++] = right[j++];\n  }\n\n  static void quickSort(int[] a, int lo, int hi) {\n    if (lo >= hi) return;\n    int pivot = a[(lo + hi) / 2];\n    int i = lo, j = hi;\n    while (i <= j) {\n      while (a[i] < pivot) i++;\n      while (a[j] > pivot) j--;\n      if (i <= j) {\n        int tmp = a[i]; a[i] = a[j]; a[j] = tmp;\n        i++; j--;\n      }\n    }\n    quickSort(a, lo, j);\n    quickSort(a, i, hi);\n  }\n\n  public static void main(String[] args) {\n    int[] arr = {5,3,1,4,2};\n    Arrays.sort(arr);            // built-in\n    mergeSort(arr);              // custom\n    quickSort(arr, 0, arr.length - 1);\n  }\n}`,
+            c: `#include <stdio.h>\n#include <stdlib.h>\n\nint cmp_int(const void* a, const void* b) {\n  int x = *(const int*)a;\n  int y = *(const int*)b;\n  return (x > y) - (x < y);\n}\n\n// Merge sort (helper)\nvoid merge(int* a, int l, int m, int r) {\n  int n1 = m - l + 1;\n  int n2 = r - m;\n  int* L = (int*)malloc(n1 * sizeof(int));\n  int* R = (int*)malloc(n2 * sizeof(int));\n  for (int i = 0; i < n1; i++) L[i] = a[l + i];\n  for (int j = 0; j < n2; j++) R[j] = a[m + 1 + j];\n  int i = 0, j = 0, k = l;\n  while (i < n1 && j < n2) {\n    if (L[i] <= R[j]) a[k++] = L[i++];\n    else a[k++] = R[j++];\n  }\n  while (i < n1) a[k++] = L[i++];\n  while (j < n2) a[k++] = R[j++];\n  free(L); free(R);\n}\n\nvoid merge_sort(int* a, int l, int r) {\n  if (l >= r) return;\n  int m = l + (r - l) / 2;\n  merge_sort(a, l, m);\n  merge_sort(a, m + 1, r);\n  merge(a, l, m, r);\n}\n\nint main(void) {\n  int arr[] = {5,3,1,4,2};\n  int n = 5;\n\n  qsort(arr, n, sizeof(int), cmp_int);  // built-in-like\n  merge_sort(arr, 0, n - 1);\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nvoid mergeSort(vector<int>& a) {\n  if (a.size() <= 1) return;\n  int mid = (int)a.size() / 2;\n  vector<int> L(a.begin(), a.begin() + mid);\n  vector<int> R(a.begin() + mid, a.end());\n  mergeSort(L);\n  mergeSort(R);\n  a.clear();\n  merge(L.begin(), L.end(), R.begin(), R.end(), back_inserter(a));\n}\n\nvoid quickSort(vector<int>& a, int lo, int hi) {\n  if (lo >= hi) return;\n  int pivot = a[(lo + hi) / 2];\n  int i = lo, j = hi;\n  while (i <= j) {\n    while (a[i] < pivot) i++;\n    while (a[j] > pivot) j--;\n    if (i <= j) swap(a[i++], a[j--]);\n  }\n  quickSort(a, lo, j);\n  quickSort(a, i, hi);\n}\n\nint main() {\n  vector<int> a = {5,3,1,4,2};\n  sort(a.begin(), a.end());\n  mergeSort(a);\n  quickSort(a, 0, (int)a.size() - 1);\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={[
+            'Built-in sort: typically O(n log n)',
+            'Merge sort: O(n log n) worst-case',
+            'Quick sort: average O(n log n), worst O(n²)',
+          ]}
+          spaceLine="Merge: O(n) extra; Quick: O(log n) recursion stack average"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>When order matters (two pointers often needs sorted input)</li>
+          <li>When you need top-k or median variants (heap/quickselect)</li>
+          <li>When grouping or deduping is easier after sorting</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Sort Colors (#75), Merge Intervals (#56), Kth Largest Element (#215), Top K Frequent (#347)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="sorting" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-12-binary-tree" title="Binary Tree" right="Traversals, BST, BFS" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A tree is hierarchical. A binary tree has at most two children per node: left and right. Top node is the root; nodes
+          with no children are leaves.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaBinaryTreeVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `from collections import deque\n\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n\n# Traversals\n\ndef inorder(root):\n    if not root:\n        return []\n    return inorder(root.left) + [root.val] + inorder(root.right)\n\ndef preorder(root):\n    if not root:\n        return []\n    return [root.val] + preorder(root.left) + preorder(root.right)\n\ndef postorder(root):\n    if not root:\n        return []\n    return postorder(root.left) + postorder(root.right) + [root.val]\n\n# Level order (BFS)\n\ndef level_order(root):\n    if not root:\n        return []\n    q = deque([root])\n    out = []\n    while q:\n        node = q.popleft()\n        out.append(node.val)\n        if node.left: q.append(node.left)\n        if node.right: q.append(node.right)\n    return out\n\n# Height\n\ndef height(root):\n    if not root:\n        return 0\n    return 1 + max(height(root.left), height(root.right))`,
+            java: `import java.util.*;\n\nclass TreeNode {\n  int val;\n  TreeNode left, right;\n  TreeNode(int v) { val = v; }\n}\n\npublic class Trees {\n  static void inorder(TreeNode r, List<Integer> out) {\n    if (r == null) return;\n    inorder(r.left, out);\n    out.add(r.val);\n    inorder(r.right, out);\n  }\n\n  static List<Integer> levelOrder(TreeNode root) {\n    if (root == null) return List.of();\n    ArrayDeque<TreeNode> q = new ArrayDeque<>();\n    q.add(root);\n    List<Integer> out = new ArrayList<>();\n    while (!q.isEmpty()) {\n      TreeNode n = q.removeFirst();\n      out.add(n.val);\n      if (n.left != null) q.addLast(n.left);\n      if (n.right != null) q.addLast(n.right);\n    }\n    return out;\n  }\n\n  static int height(TreeNode r) {\n    if (r == null) return 0;\n    return 1 + Math.max(height(r.left), height(r.right));\n  }\n}`,
+            c: `#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n  int val;\n  struct Node* left;\n  struct Node* right;\n} Node;\n\nNode* newNode(int v) {\n  Node* n = (Node*)malloc(sizeof(Node));\n  n->val = v;\n  n->left = NULL;\n  n->right = NULL;\n  return n;\n}\n\nint height(Node* r) {\n  if (!r) return 0;\n  int hl = height(r->left);\n  int hr = height(r->right);\n  return 1 + (hl > hr ? hl : hr);\n}\n\nvoid inorder(Node* r) {\n  if (!r) return;\n  inorder(r->left);\n  printf(\"%d \", r->val);\n  inorder(r->right);\n}\n`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Node {\n  int val;\n  Node* left;\n  Node* right;\n  Node(int v) : val(v), left(nullptr), right(nullptr) {}\n};\n\nint height(Node* r) {\n  if (!r) return 0;\n  return 1 + max(height(r->left), height(r->right));\n}\n\nvoid inorder(Node* r) {\n  if (!r) return;\n  inorder(r->left);\n  cout << r->val << \" \";\n  inorder(r->right);\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Traversals visit each node once: O(n)', 'Level order BFS uses a queue: O(n)']}
+          spaceLine="O(h) recursion stack (DFS) or O(w) queue (BFS), where h=height, w=max width"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Hierarchical data (UI trees, file systems)</li>
+          <li>BST-like search/insertion logic</li>
+          <li>Most recursion practice in interviews</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Max Depth (#104), Invert Tree (#226), Level Order (#102), Validate BST (#98), LCA (#236)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="binaryTree" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-13-heap" title="Heap / Priority Queue" right="Top-k, kth, merge k lists" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A heap is a complete binary tree where each parent is ≤ its children (min-heap) or ≥ (max-heap). It supports fast
+          access to the smallest/largest element.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaHeapVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `import heapq\n\n# Min-heap in Python\nh = []\nheapq.heappush(h, 3)\nheapq.heappush(h, 1)\nheapq.heappush(h, 2)\nprint(h[0])               # min\nprint(heapq.heappop(h))   # remove min\n\n# K largest using min-heap of size k\n\ndef k_largest(nums, k):\n    heap = []\n    for x in nums:\n        heapq.heappush(heap, x)\n        if len(heap) > k:\n            heapq.heappop(heap)\n    return heap[0]  # kth largest\n\n# Note: for max-heap, push negatives`,
+            java: `import java.util.*;\n\npublic class Heaps {\n  public static void main(String[] args) {\n    PriorityQueue<Integer> minHeap = new PriorityQueue<>();\n    minHeap.add(3);\n    minHeap.add(1);\n    minHeap.add(2);\n    System.out.println(minHeap.peek());\n    System.out.println(minHeap.poll());\n\n    // max-heap via reverse comparator\n    PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());\n    maxHeap.add(3);\n    maxHeap.add(1);\n    System.out.println(maxHeap.peek());\n  }\n}`,
+            c: `#include <stdio.h>\n\n// C has no built-in heap.\n// Typical interview approach: implement binary heap array with sift-up/sift-down.\nint main(void) {\n  printf(\"Implement heap with array + siftUp/siftDown in C.\\n\");\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n  priority_queue<int> maxHeap;             // max-heap\n  priority_queue<int, vector<int>, greater<int>> minHeap; // min-heap\n  minHeap.push(3);\n  minHeap.push(1);\n  minHeap.push(2);\n  cout << minHeap.top() << \"\\n\";\n  minHeap.pop();\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Insert: O(log n)', 'Remove min/max: O(log n)', 'Peek min/max: O(1)']}
+          spaceLine="O(n)"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Kth smallest/largest</li>
+          <li>Top-k frequent elements</li>
+          <li>Merge k sorted lists/arrays</li>
+          <li>Dijkstra’s shortest path</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Kth Largest (#215), Top K Frequent (#347), Merge K Sorted Lists (#23), Find Median from Data Stream (#295)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="heap" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-14-graphs" title="Graphs" right="Adj list/matrix, directed/undirected" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A graph is a set of nodes (vertices) connected by edges. Graphs can have cycles; edges can be directed or undirected,
+          weighted or unweighted.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaGraphVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Adjacency list\n\ngraph = {\n    'A': ['B', 'C', 'D'],\n    'B': ['A', 'D'],\n    'C': ['A'],\n    'D': ['A', 'B', 'E'],\n    'E': ['D'],\n}\n\n# Adjacency matrix (dense)\n# matrix[i][j] = 1 if edge exists`,
+            java: `import java.util.*;\n\npublic class Graphs {\n  public static void main(String[] args) {\n    Map<String, List<String>> g = new HashMap<>();\n    g.put(\"A\", List.of(\"B\", \"C\", \"D\"));\n    g.put(\"B\", List.of(\"A\", \"D\"));\n    g.put(\"C\", List.of(\"A\"));\n    g.put(\"D\", List.of(\"A\", \"B\", \"E\"));\n    g.put(\"E\", List.of(\"D\"));\n  }\n}`,
+            c: `#include <stdio.h>\n\n// In C, adjacency list often uses arrays/vectors of neighbors.\n// Example: edges stored in arrays head/next/to (CSR-like) for speed.`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n  unordered_map<char, vector<char>> g;\n  g['A'] = {'B','C','D'};\n  g['B'] = {'A','D'};\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Traversal (BFS/DFS): O(V + E)', 'Adj matrix edge lookup: O(1)', 'Adj list edge iteration: proportional to degree']}
+          spaceLine="Adj list: O(V + E), Adj matrix: O(V²)"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Dependencies (build systems), networks, social graphs</li>
+          <li>Any “connected components / reachability” problem</li>
+          <li>Scheduling with prerequisites (DAG)</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Number of Islands (#200), Course Schedule (#207), Clone Graph (#133)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="graphs" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-15-bfs" title="BFS (Breadth First Search)" right="Queue, shortest path unweighted" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          BFS explores neighbors first, then neighbors-of-neighbors — level by level. It uses a queue and finds shortest paths in
+          unweighted graphs.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaBfsVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `from collections import deque\n\ndef bfs(graph, start):\n    visited = set([start])\n    q = deque([start])\n    order = []\n    while q:\n        node = q.popleft()\n        order.append(node)\n        for nei in graph.get(node, []):\n            if nei not in visited:\n                visited.add(nei)\n                q.append(nei)\n    return order`,
+            java: `import java.util.*;\n\npublic class BFS {\n  static List<String> bfs(Map<String, List<String>> g, String start) {\n    Set<String> vis = new HashSet<>();\n    ArrayDeque<String> q = new ArrayDeque<>();\n    List<String> out = new ArrayList<>();\n    vis.add(start);\n    q.add(start);\n    while (!q.isEmpty()) {\n      String node = q.removeFirst();\n      out.add(node);\n      for (String nei : g.getOrDefault(node, List.of())) {\n        if (!vis.contains(nei)) {\n          vis.add(nei);\n          q.addLast(nei);\n        }\n      }\n    }\n    return out;\n  }\n}`,
+            c: `#include <stdio.h>\n\n// BFS in C uses a queue + visited array.\n// Often: int q[N], head/tail, adjacency lists.\nint main(void) {\n  printf(\"BFS = queue + visited (implement with arrays in C).\\n\");\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nvector<int> bfs(const vector<vector<int>>& g, int start) {\n  vector<int> vis(g.size(), 0);\n  queue<int> q;\n  vector<int> out;\n  vis[start] = 1;\n  q.push(start);\n  while (!q.empty()) {\n    int u = q.front(); q.pop();\n    out.push_back(u);\n    for (int v : g[u]) {\n      if (!vis[v]) { vis[v] = 1; q.push(v); }\n    }\n  }\n  return out;\n}\n`,
+          }}
+        />
+        <ComplexityBlock timeLines={['Time: O(V + E)', 'Queue operations are O(1) amortized']} spaceLine="O(V) for visited + queue" />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Shortest path in unweighted graphs</li>
+          <li>Level-order traversal of binary trees</li>
+          <li>Distance-k / layers / bipartite checks</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Binary Tree Level Order (#102), Number of Islands (#200), Rotting Oranges (#994), Word Ladder (#127)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="bfs" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-16-dfs" title="DFS (Depth First Search)" right="Stack/recursion, cycles" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          DFS explores as far as possible down one path before backtracking. It uses a stack (explicit) or recursion.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaDfsVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# DFS recursive\n\ndef dfs(graph, node, visited=None):\n    if visited is None:\n        visited = set()\n    if node in visited:\n        return\n    visited.add(node)\n    print(node)\n    for nei in graph.get(node, []):\n        dfs(graph, nei, visited)\n\n# DFS iterative\n\ndef dfs_iter(graph, start):\n    stack = [start]\n    visited = set()\n    while stack:\n        node = stack.pop()\n        if node in visited:\n            continue\n        visited.add(node)\n        for nei in graph.get(node, []):\n            if nei not in visited:\n                stack.append(nei)`,
+            java: `import java.util.*;\n\npublic class DFS {\n  static void dfs(Map<Integer, List<Integer>> g, int start) {\n    Set<Integer> vis = new HashSet<>();\n    ArrayDeque<Integer> st = new ArrayDeque<>();\n    st.push(start);\n    while (!st.isEmpty()) {\n      int node = st.pop();\n      if (vis.contains(node)) continue;\n      vis.add(node);\n      for (int nei : g.getOrDefault(node, List.of())) {\n        if (!vis.contains(nei)) st.push(nei);\n      }\n    }\n  }\n}`,
+            c: `#include <stdio.h>\n\n// DFS in C: recursion or stack + visited array.\n// Typically uses adjacency lists.\nint main(void) {\n  printf(\"DFS = stack/recursion + visited in C.\\n\");\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nvoid dfs(const vector<vector<int>>& g, int start) {\n  vector<int> vis(g.size(), 0);\n  stack<int> st;\n  st.push(start);\n  while (!st.empty()) {\n    int u = st.top(); st.pop();\n    if (vis[u]) continue;\n    vis[u] = 1;\n    for (int v : g[u]) if (!vis[v]) st.push(v);\n  }\n}\n`,
+          }}
+        />
+        <ComplexityBlock timeLines={['Time: O(V + E)', 'Handles cycles only with visited set']} spaceLine="O(V) visited + O(V) stack worst-case" />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Connected components</li>
+          <li>Cycle detection</li>
+          <li>Topological sort (DAG)</li>
+          <li>Path finding / maze style problems</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Course Schedule (#207), Number of Islands (#200), Clone Graph (#133)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="dfs" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-17-dp" title="Dynamic Programming" right="Memo/tab, patterns" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          DP breaks problems into overlapping subproblems and stores results to avoid recomputation. Two approaches: top-down
+          memoization and bottom-up tabulation.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaDpVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Fibonacci memo\n\ndef fib(n, memo=None):\n    memo = {} if memo is None else memo\n    if n in memo:\n        return memo[n]\n    if n <= 1:\n        return n\n    memo[n] = fib(n-1, memo) + fib(n-2, memo)\n    return memo[n]\n\n# Climbing stairs (tabulation)\n\ndef climb_stairs(n):\n    if n <= 2:\n        return n\n    dp = [0]*(n+1)\n    dp[1], dp[2] = 1, 2\n    for i in range(3, n+1):\n        dp[i] = dp[i-1] + dp[i-2]\n    return dp[n]\n\n# Coin change (min coins)\n\ndef coin_change(coins, amount):\n    INF = 10**9\n    dp = [0] + [INF]*amount\n    for a in range(1, amount+1):\n        for c in coins:\n            if a - c >= 0:\n                dp[a] = min(dp[a], dp[a-c] + 1)\n    return -1 if dp[amount] == INF else dp[amount]`,
+            java: `import java.util.*;\n\npublic class DP {\n  static int fib(int n, Map<Integer,Integer> memo) {\n    if (memo.containsKey(n)) return memo.get(n);\n    if (n <= 1) return n;\n    int ans = fib(n-1, memo) + fib(n-2, memo);\n    memo.put(n, ans);\n    return ans;\n  }\n\n  static int climbStairs(int n) {\n    if (n <= 2) return n;\n    int[] dp = new int[n+1];\n    dp[1] = 1; dp[2] = 2;\n    for (int i = 3; i <= n; i++) dp[i] = dp[i-1] + dp[i-2];\n    return dp[n];\n  }\n\n  static int coinChange(int[] coins, int amount) {\n    int INF = 1_000_000_000;\n    int[] dp = new int[amount+1];\n    Arrays.fill(dp, INF);\n    dp[0] = 0;\n    for (int a = 1; a <= amount; a++) {\n      for (int c : coins) {\n        if (a - c >= 0 && dp[a-c] != INF) dp[a] = Math.min(dp[a], dp[a-c] + 1);\n      }\n    }\n    return dp[amount] == INF ? -1 : dp[amount];\n  }\n}`,
+            c: `#include <stdio.h>\n\n// Climbing stairs (tabulation)\nint climb_stairs(int n) {\n  if (n <= 2) return n;\n  int a = 1, b = 2;\n  for (int i = 3; i <= n; i++) {\n    int c = a + b;\n    a = b;\n    b = c;\n  }\n  return b;\n}\n\nint main(void) {\n  printf(\"%d\\n\", climb_stairs(5));\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint climbStairs(int n) {\n  if (n <= 2) return n;\n  int a = 1, b = 2;\n  for (int i = 3; i <= n; i++) {\n    int c = a + b;\n    a = b;\n    b = c;\n  }\n  return b;\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Depends on state count × transitions', 'Typical 1D DP: O(n)', 'Coin change: O(amount × #coins)']}
+          spaceLine="Often O(n) (or O(1) with rolling variables for linear DP)"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Min/max/count problems with overlapping subproblems</li>
+          <li>Sequence decisions (take/skip), grid paths, string alignment</li>
+          <li>When recursion is repeating the same inputs</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Climbing Stairs (#70), House Robber (#198), Coin Change (#322), LIS (#300)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="dp" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-18-greedy" title="Greedy Algorithms" right="Local choice, proofs" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Greedy algorithms make the locally optimal choice at each step, hoping it leads to a global optimum. They do not
+          reconsider decisions.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaGreedyVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Jump Game (greedy)\n\ndef can_jump(nums):\n    far = 0\n    for i, x in enumerate(nums):\n        if i > far:\n            return False\n        far = max(far, i + x)\n    return True\n\n# Gas Station (greedy)\n\ndef can_complete(gas, cost):\n    total = 0\n    tank = 0\n    start = 0\n    for i in range(len(gas)):\n        diff = gas[i] - cost[i]\n        total += diff\n        tank += diff\n        if tank < 0:\n            start = i + 1\n            tank = 0\n    return start if total >= 0 else -1`,
+            java: `public class Greedy {\n  static boolean canJump(int[] nums) {\n    int far = 0;\n    for (int i = 0; i < nums.length; i++) {\n      if (i > far) return false;\n      far = Math.max(far, i + nums[i]);\n    }\n    return true;\n  }\n}`,
+            c: `#include <stdio.h>\n\nint can_jump(int *nums, int n) {\n  int far = 0;\n  for (int i = 0; i < n; i++) {\n    if (i > far) return 0;\n    if (i + nums[i] > far) far = i + nums[i];\n  }\n  return 1;\n}\n`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nbool canJump(const vector<int>& nums) {\n  int far = 0;\n  for (int i = 0; i < (int)nums.size(); i++) {\n    if (i > far) return false;\n    far = max(far, i + nums[i]);\n  }\n  return true;\n}\n`,
+          }}
+        />
+        <ComplexityBlock timeLines={['Often O(n) scanning while maintaining best-so-far']} spaceLine="O(1)" />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>When a proof exists that local best leads to global best</li>
+          <li>Interval scheduling, reachability, selecting minimal resources</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Jump Game (#55), Gas Station (#134), Merge Intervals (#56), Task Scheduler (#621)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="greedy" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-19-backtracking" title="Backtracking" right="Subsets, perms, pruning" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Backtracking tries all possible solutions by building a candidate step-by-step, and undoing choices when a path can’t
+          work.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaBacktrackingVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `# Subsets\n\ndef subsets(nums):\n    res = []\n    cur = []\n\n    def backtrack(i):\n        if i == len(nums):\n            res.append(cur.copy())\n            return\n        # choice: include\n        cur.append(nums[i])\n        backtrack(i + 1)\n        cur.pop()  # undo\n        # choice: exclude\n        backtrack(i + 1)\n\n    backtrack(0)\n    return res\n\n# Permutations\n\ndef permute(nums):\n    res = []\n    used = [False]*len(nums)\n    cur = []\n\n    def backtrack():\n        if len(cur) == len(nums):\n            res.append(cur.copy())\n            return\n        for i in range(len(nums)):\n            if used[i]:\n                continue\n            used[i] = True\n            cur.append(nums[i])\n            backtrack()\n            cur.pop()\n            used[i] = False\n\n    backtrack()\n    return res`,
+            java: `import java.util.*;\n\npublic class Backtracking {\n  static List<List<Integer>> subsets(int[] nums) {\n    List<List<Integer>> res = new ArrayList<>();\n    ArrayList<Integer> cur = new ArrayList<>();\n\n    class Helper {\n      void backtrack(int i) {\n        if (i == nums.length) {\n          res.add(new ArrayList<>(cur));\n          return;\n        }\n        cur.add(nums[i]);\n        backtrack(i + 1);\n        cur.remove(cur.size() - 1);\n        backtrack(i + 1);\n      }\n    }\n\n    new Helper().backtrack(0);\n    return res;\n  }\n}`,
+            c: `#include <stdio.h>\n\n// Backtracking in C uses recursion + arrays for current state.\n// Example: subsets of [1,2,3] -> 2^n outputs.\nint main(void) {\n  printf(\"Backtracking = recursion + choose/undo in C.\\n\");\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nvoid subsets(const vector<int>& nums, int i, vector<int>& cur, vector<vector<int>>& res) {\n  if (i == (int)nums.size()) { res.push_back(cur); return; }\n  cur.push_back(nums[i]);\n  subsets(nums, i+1, cur, res);\n  cur.pop_back();\n  subsets(nums, i+1, cur, res);\n}\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Subsets: O(2^n)', 'Permutations: O(n!)', 'Pruning reduces search but worst-case remains exponential']}
+          spaceLine="O(n) recursion depth + output size"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Generate all combinations/permutations</li>
+          <li>Constraint satisfaction (N-Queens, Sudoku)</li>
+          <li>Search with pruning</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Subsets (#78), Permutations (#46), Combination Sum (#39), N-Queens (#51)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="backtracking" />
+      </DsaConcept>
+
+      <DsaConcept id="dsa-20-trie" title="Trie" right="Prefix tree, autocomplete" openId={openId} setOpenId={setOpenId}>
+        <p className="mb-3 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A Trie (prefix tree) stores words by characters from root to leaf. It makes prefix lookups fast: O(m) where m is the
+          prefix length.
+        </p>
+        <p className="mb-3 font-semibold text-gray-900">VISUAL:</p>
+        <DsaTrieVisual />
+        <p className="mb-3 font-semibold text-gray-900">CODE:</p>
+        <DSACode
+          selectedLang={selectedLang}
+          blocks={{
+            python: `class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word):\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.end = True\n\n    def search(self, word):\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.end\n\n    def starts_with(self, prefix):\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True`,
+            java: `import java.util.*;\n\nclass TrieNode {\n  Map<Character, TrieNode> children = new HashMap<>();\n  boolean end = false;\n}\n\npublic class Trie {\n  TrieNode root = new TrieNode();\n\n  public void insert(String word) {\n    TrieNode node = root;\n    for (char ch : word.toCharArray()) {\n      node.children.putIfAbsent(ch, new TrieNode());\n      node = node.children.get(ch);\n    }\n    node.end = true;\n  }\n\n  public boolean search(String word) {\n    TrieNode node = root;\n    for (char ch : word.toCharArray()) {\n      if (!node.children.containsKey(ch)) return false;\n      node = node.children.get(ch);\n    }\n    return node.end;\n  }\n\n  public boolean startsWith(String prefix) {\n    TrieNode node = root;\n    for (char ch : prefix.toCharArray()) {\n      if (!node.children.containsKey(ch)) return false;\n      node = node.children.get(ch);\n    }\n    return true;\n  }\n}`,
+            c: `#include <stdio.h>\n\n// Trie in C: struct node with children[26] pointers + end flag.\n// Insert/search are O(m). Common in embedded autocomplete.\nint main(void) {\n  printf(\"Trie in C: node{children[26], end}. Insert/search O(m).\\n\");\n  return 0;\n}`,
+            cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Node {\n  bool end = false;\n  unordered_map<char, Node*> next;\n};\n\nstruct Trie {\n  Node* root = new Node();\n  void insert(const string& w) {\n    Node* cur = root;\n    for (char ch : w) {\n      if (!cur->next.count(ch)) cur->next[ch] = new Node();\n      cur = cur->next[ch];\n    }\n    cur->end = true;\n  }\n  bool startsWith(const string& p) {\n    Node* cur = root;\n    for (char ch : p) {\n      if (!cur->next.count(ch)) return false;\n      cur = cur->next[ch];\n    }\n    return true;\n  }\n};\n`,
+          }}
+        />
+        <ComplexityBlock
+          timeLines={['Insert/Search/Prefix: O(m) where m = word length', 'Independent of number of stored words (n)']}
+          spaceLine="O(total characters stored) — can be large; optimize with arrays for fixed alphabets"
+        />
+        <p className="mb-3 font-semibold text-gray-900">WHEN TO USE:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Autocomplete / prefix search</li>
+          <li>Dictionary word lookup</li>
+          <li>Routing tables / string keys with shared prefixes</li>
+        </ul>
+        <p className="mb-3 font-semibold text-gray-900">LEETCODE PROBLEMS:</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6 text-sm text-gray-800 marker:text-primary">
+          <li>Implement Trie (#208), Word Search II (#212), Replace Words (#648)</li>
+        </ul>
+        <DsaGoDeeperBox conceptKey="trie" />
+      </DsaConcept>
+    </div>
+  )
+}
+
 function GenericTopicCurriculum({ topic, openId, setOpenId }) {
   const blocks = {
     'ml-ai': {
@@ -3728,6 +5372,17 @@ export default function LearningPlan() {
                 </div>
 
                 <PythonCurriculum openId={openAccordion} setOpenId={setOpenAccordion} />
+              </>
+            ) : activeTopic === 'dsa' ? (
+              <>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    <span className="mr-2">{TOPIC_HEADINGS.dsa.icon}</span>
+                    {TOPIC_HEADINGS.dsa.title}
+                  </h2>
+                  <p className="mt-2 text-gray-600">{TOPIC_HEADINGS.dsa.sub}</p>
+                </div>
+                <DSACurriculum openId={openAccordion} setOpenId={setOpenAccordion} />
               </>
             ) : activeTopic === 'java' ? (
               <>

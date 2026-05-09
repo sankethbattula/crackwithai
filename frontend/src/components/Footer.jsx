@@ -33,7 +33,7 @@ export default function Footer() {
         </div>
 
         <div className="text-sm leading-relaxed text-text-muted md:text-right">
-          <div>© 2025 CrackWithAI · Built by Sai Sanketh Reddy Battula · MS IT, ASU GPA 3.9</div>
+          <div>© 2025 CrackWithAI · Sanketh Battula</div>
         </div>
       </div>
     </footer>
