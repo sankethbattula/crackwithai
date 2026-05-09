@@ -679,6 +679,36 @@ print(low, high, total)   # 1 9 23`}</CodeBlock>
 
 print(message)  # ERROR — message only exists
                 # inside the function (local scope)`}</CodeBlock>
+
+        <Divider />
+        <p className="mb-4 mt-6">
+          <span className="mr-2">🎯</span>
+          <strong>Practice Problems — Do These Today</strong>
+        </p>
+        <ol className="mb-6 list-decimal space-y-2 pl-6 marker:text-primary">
+          <li>Print your name five ways (uppercase, lowercase, reversed, length, first letter only).</li>
+          <li>Build a dictionary with your info: name, age, university, and target company.</li>
+          <li>Write a function that returns whether a number is even or odd.</li>
+          <li>Create a list of your top five target companies and print each with a for loop.</li>
+          <li>Write a function that takes a list of numbers and returns only the even ones.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://docs.python.org/3/">Python Official Docs</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://www.youtube.com/results?search_query=freecodecamp+python+full+course">
+              FreeCodeCamp Python (YouTube)
+            </ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://www.w3schools.com/python/">W3Schools Python</ResourceLink>
+          </li>
+        </ul>
       </AccordionRow>
 
       <AccordionRow
@@ -690,60 +720,313 @@ print(message)  # ERROR — message only exists
         title="Python — Day 2"
         right="OOP, files, libraries"
       >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: CLASSES AND OBJECTS (OOP BASICS)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
         <p className="mb-4">
-          <span className="mr-2">📖</span>
-          <strong>What You Will Learn</strong>
+          A <strong>class</strong> is a blueprint for creating <strong>objects</strong>. An object bundles data (attributes) and
+          behavior (methods) together. <code className="rounded bg-gray-100 px-1">self</code> refers to the specific instance the
+          code is acting on.
         </p>
-        <p className="mb-4">Object-oriented programming, file handling, error handling, and useful libraries.</p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Large programs need structure. Modeling &quot;Student,&quot; &quot;Order,&quot; or &quot;Payment&quot; as classes keeps
+          related logic in one place, reduces bugs, and matches how teams design real systems.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          At Stripe or PayPal, classes represent payments, customers, and ledgers. At Uber, classes model drivers, trips, and
+          pricing rules. The same patterns you learn here appear in production codebases.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          <code className="rounded bg-gray-100 px-1">__init__</code> runs when you create an object. Instance attributes live on{' '}
+          <code className="rounded bg-gray-100 px-1">self</code>. Methods are functions that take <code className="rounded bg-gray-100 px-1">self</code> as the first parameter so they can read and update that object&apos;s state.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE:</p>
         <CodeBlock>{`class Student:
+    # __init__ runs once when you create a Student object
     def __init__(self, name, gpa, university):
-        self.name = name
+        self.name = name              # store name on this instance
         self.gpa = gpa
         self.university = university
+
     def introduce(self):
+        # self.name is THIS student's name
         return f"I am {self.name} from {self.university}"
+
     def is_honor_roll(self):
         return self.gpa >= 3.5
 
-class GradStudent(Student):
-    def __init__(self, name, gpa, university, thesis):
-        super().__init__(name, gpa, university)
-        self.thesis = thesis`}</CodeBlock>
-        <p className="mb-2 mt-4 font-semibold">4 PILLARS OF OOP</p>
-        <ul className="mb-4 list-disc space-y-2 pl-6">
-          <li>Encapsulation — hide internal details</li>
-          <li>Inheritance — reuse and extend behavior</li>
-          <li>Polymorphism — same interface, different behavior</li>
-          <li>Abstraction — hide complexity behind simple APIs</li>
-        </ul>
-        <CodeBlock>{`with open("resume.txt", "r") as file:
-    content = file.read()
+# Create objects (instances) from the blueprint
+sai = Student("Sai", 3.9, "ASU")
+print(sai.introduce())       # I am Sai from ASU
+print(sai.is_honor_roll())   # True`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Calling <code className="rounded bg-gray-100 px-1">Student(...)</code> allocates an object, runs{' '}
+          <code className="rounded bg-gray-100 px-1">__init__</code>, and binds <code className="rounded bg-gray-100 px-1">sai</code> to that object. Methods receive that same object as{' '}
+          <code className="rounded bg-gray-100 px-1">self</code> automatically.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <CodeBlock>{`# Forgetting self in method definition
+def bad_introduce():  # should be def introduce(self):
+    return self.name  # NameError — no self
 
-try:
-    x = int(input("Enter a number: "))
+# Forgetting to call __init__ arguments
+# s = Student()  # TypeError if __init__ requires arguments`}</CodeBlock>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: INHERITANCE</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Inheritance lets a <strong>child class</strong> reuse and extend a <strong>parent class</strong>. The child gets the
+          parent&apos;s methods and attributes unless it overrides them.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          You should not copy-paste the same fields and methods for &quot;GradStudent&quot; and &quot;Undergrad.&quot; Inheritance
+          shares the common &quot;Student&quot; core and only adds what is different.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Frameworks use inheritance everywhere: base &quot;Model&quot; classes, custom exceptions extending a common base, or
+          plugin interfaces where each plugin subclasses a core handler.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Write <code className="rounded bg-gray-100 px-1">class Child(Parent):</code>. Call{' '}
+          <code className="rounded bg-gray-100 px-1">super()</code> to run the parent&apos;s version of a method (often inside{' '}
+          <code className="rounded bg-gray-100 px-1">__init__</code>) so you do not duplicate setup logic.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE:</p>
+        <CodeBlock>{`class GradStudent(Student):
+    def __init__(self, name, gpa, university, thesis):
+        super().__init__(name, gpa, university)  # run Student.__init__
+        self.thesis = thesis                     # grad-only field
+
+    def introduce(self):
+        base = super().introduce()               # reuse parent's string
+        return f"{base}, researching {self.thesis}"
+
+g = GradStudent("Sai", 3.9, "ASU", "ML systems")
+print(g.introduce())`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Python looks up methods on the instance, then the class, then parent classes (MRO). Overriding{' '}
+          <code className="rounded bg-gray-100 px-1">introduce</code> in <code className="rounded bg-gray-100 px-1">GradStudent</code> replaces the parent behavior for grad instances only.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <CodeBlock>{`# Forgetting super().__init__ — parent fields never set
+# Overusing inheritance; sometimes composition (has-a) fits better`}</CodeBlock>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: THE FOUR PILLARS OF OOP</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Interviewers often ask for the four pillars: <strong>encapsulation, inheritance, polymorphism, abstraction</strong>.
+          They describe how to hide detail, reuse code, swap behaviors, and expose simple interfaces.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          These ideas keep code maintainable as teams and features grow. They are vocabulary for discussing design in code
+          reviews and interviews.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Public APIs are <strong>abstraction</strong>. Internal fields with getters/setters are{' '}
+          <strong>encapsulation</strong>. Plugin systems rely on <strong>polymorphism</strong> (many classes, one interface).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <ul className="mb-4 list-disc space-y-2 pl-6 text-gray-800">
+          <li>
+            <strong>Encapsulation</strong> — hide internals; expose only safe methods (like not letting balance go negative).
+          </li>
+          <li>
+            <strong>Inheritance</strong> — IS-A relationship; child extends parent.
+          </li>
+          <li>
+            <strong>Polymorphism</strong> — same method name, different classes respond differently (e.g.{' '}
+            <code className="rounded bg-gray-100 px-1">speak()</code> on Dog vs Cat).
+          </li>
+          <li>
+            <strong>Abstraction</strong> — simple surface (e.g. <code className="rounded bg-gray-100 px-1">charge_card()</code>) hiding complex steps.
+          </li>
+        </ul>
+        <p className="mb-2 font-semibold text-gray-900">CODE (polymorphism sketch):</p>
+        <CodeBlock>{`class Dog:
+    def speak(self):
+        return "Woof"
+
+class Cat:
+    def speak(self):
+        return "Meow"
+
+for animal in [Dog(), Cat()]:
+    print(animal.speak())  # same call, different behavior`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Python resolves <code className="rounded bg-gray-100 px-1">speak</code> on the actual class of each object — that is polymorphism in action.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">
+          Memorizing buzzwords without examples. Always tie each pillar to a concrete class or API you can describe in one
+          sentence.
+        </p>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: FILE HANDLING</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          File handling is reading from or writing to files on disk using Python. The <code className="rounded bg-gray-100 px-1">with</code> statement ensures files close
+          automatically even if an error occurs.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Programs need logs, configs, exports, and imports. Interview tasks often include &quot;parse this file&quot; or &quot;write
+          results to CSV.&quot;
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          ETL jobs read raw files; services write audit logs; tools generate reports. In production, object storage (S3) is
+          common, but the same read/write patterns apply.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Open with a mode: <code className="rounded bg-gray-100 px-1">&quot;r&quot;</code> read, <code className="rounded bg-gray-100 px-1">&quot;w&quot;</code> overwrite write, <code className="rounded bg-gray-100 px-1">&quot;a&quot;</code> append. Iterate lines to avoid loading huge files into memory at once.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE:</p>
+        <CodeBlock>{`# Read entire file into one string
+with open("resume.txt", "r", encoding="utf-8") as file:
+    content = file.read()
+    print(content[:200])  # first 200 chars
+
+# Write a new file (creates or truncates)
+with open("output.txt", "w", encoding="utf-8") as file:
+    file.write("Hello from Python!\\n")
+
+# Read line by line — memory friendly
+with open("data.txt", "r", encoding="utf-8") as file:
+    for line in file:
+        print(line.strip())  # strip removes newline`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          The OS opens a file descriptor; Python wraps it in a file object. Exiting the <code className="rounded bg-gray-100 px-1">with</code> block closes the file. Wrong
+          encoding can mangle text — <code className="rounded bg-gray-100 px-1">utf-8</code> is the usual default for modern apps.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <CodeBlock>{`# Forgetting encoding on non-ASCII text
+# Using "w" when you meant to append — it wipes the file
+# Skipping a with-block — file may stay open if an exception fires`}</CodeBlock>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: ERROR HANDLING (try / except)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          <code className="rounded bg-gray-100 px-1">try</code> runs code that might fail. <code className="rounded bg-gray-100 px-1">except</code> catches specific error types so you can recover or show a clear message instead of crashing.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Users type invalid input. Networks drop. Files go missing. Robust programs anticipate failures and handle them
+          deliberately.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          APIs return friendly errors when parsing fails. Checkout flows catch payment errors and retry or surface a support
+          path. Logging often happens in <code className="rounded bg-gray-100 px-1">except</code> blocks.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Exceptions bubble up until a matching <code className="rounded bg-gray-100 px-1">except</code> catches them. <code className="rounded bg-gray-100 px-1">finally</code> runs whether or not an error occurred — good for cleanup.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE:</p>
+        <CodeBlock>{`try:
+    number = int(input("Enter a number: "))
+    result = 100 / number
+    print(result)
 except ValueError:
-    print("Not a number!")`}</CodeBlock>
-        <p className="mb-4 mt-4">
+    print("That is not a valid integer.")
+except ZeroDivisionError:
+    print("Cannot divide by zero.")
+finally:
+    print("Done with this input attempt.")`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          If <code className="rounded bg-gray-100 px-1">int(...)</code> fails, Python jumps to <code className="rounded bg-gray-100 px-1">ValueError</code>. If division runs but the number is 0,{' '}
+          <code className="rounded bg-gray-100 px-1">ZeroDivisionError</code> fires. Only one matching <code className="rounded bg-gray-100 px-1">except</code> block runs for a given exception.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <CodeBlock>{`except:  # catches EVERYTHING — hides bugs; be specific
+    pass
+
+# Swallowing errors without logging in production`}</CodeBlock>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: USEFUL STANDARD LIBRARIES</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Python ships with batteries included: <code className="rounded bg-gray-100 px-1">json</code>, <code className="rounded bg-gray-100 px-1">datetime</code>, <code className="rounded bg-gray-100 px-1">os</code>, <code className="rounded bg-gray-100 px-1">random</code>, <code className="rounded bg-gray-100 px-1">math</code>, and <code className="rounded bg-gray-100 px-1">collections</code> are used daily in scripts and services.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Reinventing JSON parsing or date math wastes time and introduces bugs. Standard libraries are well-tested and fast
+          enough for most tasks.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Microservices exchange JSON. Cron jobs use <code className="rounded bg-gray-100 px-1">datetime</code>. Pipelines use <code className="rounded bg-gray-100 px-1">os.path</code> or <code className="rounded bg-gray-100 px-1">pathlib</code>. Interviewers expect you to know <code className="rounded bg-gray-100 px-1">json.loads</code> / <code className="rounded bg-gray-100 px-1">dumps</code>.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          <code className="rounded bg-gray-100 px-1">json.dumps</code> turns Python dicts into strings; <code className="rounded bg-gray-100 px-1">json.loads</code> parses JSON strings into dicts. <code className="rounded bg-gray-100 px-1">datetime.date.today()</code> gives today&apos;s date object.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE:</p>
+        <CodeBlock>{`import json
+import datetime
+
+data = {"name": "Sai", "gpa": 3.9}
+s = json.dumps(data)        # dict → JSON string
+back = json.loads(s)        # JSON string → dict
+print(back["name"])
+
+today = datetime.date.today()
+print(today)`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          JSON keys become strings in Python; nested structures become dicts and lists. Dates are not JSON-native — for APIs
+          people often serialize them as ISO strings.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <CodeBlock>{`# Using single quotes in JSON text — JSON requires double quotes
+# Forgetting json.loads vs load (file) — loads takes a string`}</CodeBlock>
+
+        <Divider />
+        <p className="mb-4">
           <span className="mr-2">🎯</span>
           <strong>Practice Problems</strong>
         </p>
-        <ol className="list-decimal space-y-2 pl-6 marker:text-primary">
-          <li>BankAccount class: deposit, withdraw, balance.</li>
-          <li>Student class: honor roll if GPA ≥ 3.5.</li>
-          <li>Read a text file and count words.</li>
-          <li>Write gradebook dict to JSON and read it back.</li>
-          <li>Handle invalid numeric input gracefully.</li>
+        <ol className="mb-6 list-decimal space-y-2 pl-6 marker:text-primary">
+          <li>Implement a <code className="rounded bg-gray-100 px-1">BankAccount</code> class with deposit, withdraw, and get_balance (no negative balance).</li>
+          <li>
+            Implement <code className="rounded bg-gray-100 px-1">Student</code> with a method that returns <code className="rounded bg-gray-100 px-1">&quot;Honor Roll&quot;</code> if GPA ≥ 3.5 else{' '}
+            <code className="rounded bg-gray-100 px-1">&quot;Good Standing&quot;</code>.
+          </li>
+          <li>Read a text file and print how many words it contains.</li>
+          <li>Build a gradebook dict, write it to a JSON file with <code className="rounded bg-gray-100 px-1">json.dump</code>, then read it back with <code className="rounded bg-gray-100 px-1">json.load</code>.</li>
+          <li>Prompt for a number in a loop until the user enters valid input or types &quot;quit&quot;.</li>
         </ol>
-        <p className="mb-2 mt-4">
+        <p className="mb-2">
           <span className="mr-2">📚</span>
           <strong>Go Deeper</strong>
         </p>
-        <ul className="list-disc space-y-1 pl-6">
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
           <li>
-            <ResourceLink href="https://realpython.com/python3-object-oriented-programming/">Real Python OOP</ResourceLink>
+            <ResourceLink href="https://realpython.com/python3-object-oriented-programming/">Real Python — OOP Guide</ResourceLink>
           </li>
           <li>
             <ResourceLink href="https://docs.python.org/3/tutorial/classes.html">Python Docs — Classes</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://docs.python.org/3/library/json.html">Python Docs — json module</ResourceLink>
           </li>
         </ul>
       </AccordionRow>
@@ -757,13 +1040,60 @@ except ValueError:
         title="DSA — Week 1"
         right="Arrays, strings, hashing, two-pointer"
       >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: ARRAYS AND STRINGS (FOUNDATION)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
         <p className="mb-4">
-          <span className="mr-2">📖</span>
-          <strong>Arrays and Strings</strong> — the most tested topics in interviews.
+          In Python, lists are your dynamic arrays; strings are immutable sequences of characters. Indexing, slicing, and
+          iteration are the basic moves for almost every interview problem.
         </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Interviewers default to array and string problems because they test logic, complexity intuition, and careful handling
+          of edge cases without heavy APIs.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Search ranking features, log parsing, time-series buffers, and text normalization all boil down to sequential data
+          and efficient passes over it.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Know <code className="rounded bg-gray-100 px-1">O(1)</code> index access, <code className="rounded bg-gray-100 px-1">len</code>, slice semantics (end index exclusive), and that string &quot;mutation&quot; builds new strings.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE:</p>
         <CodeBlock>{`arr = [10, 20, 30, 40, 50]
-arr[0]; arr[-1]; arr[1:3]
-len(arr); arr.append(60); arr.sort()`}</CodeBlock>
+print(arr[0], arr[-1])    # first and last
+print(arr[1:3])           # [20, 30] — stops before index 3
+arr.append(60)            # add to end
+arr.sort()                # in-place ascending sort`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Slicing returns a new list; <code className="rounded bg-gray-100 px-1">sort()</code> reorders in place. For strings, methods like <code className="rounded bg-gray-100 px-1">.lower()</code> return new objects.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Off-by-one slices; assuming <code className="rounded bg-gray-100 px-1">sort()</code> returns a new list (it returns <code className="rounded bg-gray-100 px-1">None</code>).</p>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: TWO POINTER TECHNIQUE</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Two pointers are two indices moving through an array (or string) under a rule — often from both ends toward the
+          middle, or both from the start at different speeds.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Nested loops often give <code className="rounded bg-gray-100 px-1">O(n²)</code>. A smart two-pointer pattern can reduce the same problem to <code className="rounded bg-gray-100 px-1">O(n)</code> when the data is ordered or the structure allows eliminating many pairs at once.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Merging sorted streams, validating palindromes, finding pairs with a target sum on sorted data, and resizing windows
+          all show up in real pipelines and interviews.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Place <code className="rounded bg-gray-100 px-1">left</code> at the start and <code className="rounded bg-gray-100 px-1">right</code> at the end. Each step moves the pointer that improves your goal (e.g. increase sum vs decrease sum). Invariant: the answer, if it exists, stays inside the remaining range.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (sorted array — pair sums to target):</p>
         <CodeBlock>{`def has_pair_sorted(arr, target):
     left, right = 0, len(arr) - 1
     while left < right:
@@ -771,43 +1101,131 @@ len(arr); arr.append(60); arr.sort()`}</CodeBlock>
         if total == target:
             return True
         if total < target:
-            left += 1
+            left += 1    # need a larger sum → move left rightward
         else:
-            right -= 1
+            right -= 1   # need a smaller sum → move right leftward
     return False`}</CodeBlock>
-        <CodeBlock>{`def max_sum(arr, k):
-    window_sum = sum(arr[:k])
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Each pointer moves at most <code className="rounded bg-gray-100 px-1">n</code> steps — linear time, <code className="rounded bg-gray-100 px-1">O(1)</code> extra space. This only works because sorting orders the search space.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">
+          Using this on an unsorted array without sorting first (sorting changes indices — not OK for index-return problems like
+          Two Sum on arbitrary arrays — use a hash map there).
+        </p>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: SLIDING WINDOW</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A sliding window maintains a contiguous subarray (or substring) of size <code className="rounded bg-gray-100 px-1">k</code> or variable size and updates its sum or
+          frequency as it moves one step at a time.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Recomputing from scratch for every window costs <code className="rounded bg-gray-100 px-1">O(n·k)</code>. Sliding adds the entering element and subtracts the leaving element — <code className="rounded bg-gray-100 px-1">O(n)</code>.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Rate limiting over time buckets, rolling metrics, stream processing, and substring problems with constraints (unique
+          chars, max frequency, etc.).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Initialize the first window in one pass. For each shift: <code className="rounded bg-gray-100 px-1">window += arr[i]</code>, <code className="rounded bg-gray-100 px-1">window -= arr[i-k]</code>, track max or min as needed.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (fixed size k — max sum):</p>
+        <CodeBlock>{`def max_sum_subarray_size_k(arr, k):
+    if k > len(arr):
+        return 0
+    window_sum = sum(arr[:k])   # sum of first k elements
     best = window_sum
     for i in range(k, len(arr)):
-        window_sum += arr[i] - arr[i - k]
+        window_sum += arr[i] - arr[i - k]  # slide: add new, drop old
         best = max(best, window_sum)
     return best`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          The inner loop does constant work per index — total <code className="rounded bg-gray-100 px-1">O(n)</code>. Variable-size windows use two pointers with expand/shrink rules.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Forgetting to handle <code className="rounded bg-gray-100 px-1">k &gt; len(arr)</code>; off-by-one when subtracting <code className="rounded bg-gray-100 px-1">arr[i-k]</code>.</p>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: HASH MAP (DICTIONARY) PATTERN</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A hash map stores key → value with average <code className="rounded bg-gray-100 px-1">O(1)</code> insert and lookup. In Python, the built-in <code className="rounded bg-gray-100 px-1">dict</code> is your interview hash map.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Many array problems ask &quot;have I seen the complement before?&quot; or &quot;what is the frequency?&quot; Linear scans with a dict
+          beat naive nested loops.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Caching, deduplication, counting events, indexing records by ID, and implementing sets of seen items at scale (with
+          real hash tables + collision handling in lower-level systems).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Walk the array once. For Two Sum, store each value → index. For each <code className="rounded bg-gray-100 px-1">num</code>, check if <code className="rounded bg-gray-100 px-1">target - num</code> is already in the map.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (Two Sum — one pass):</p>
         <CodeBlock>{`def two_sum(nums, target):
-    seen = {}
+    seen = {}                      # value → index
     for i, num in enumerate(nums):
-        c = target - num
-        if c in seen:
-            return [seen[c], i]
-        seen[num] = i`}</CodeBlock>
+        need = target - num        # complement we need
+        if need in seen:
+            return [seen[need], i] # earlier index first
+        seen[num] = i              # record this value's index
+    return []                      # no pair`}</CodeBlock>
+        <p className="mb-2 font-semibold text-gray-900">CODE (frequency count):</p>
+        <CodeBlock>{`def count_frequency(arr):
+    freq = {}
+    for x in arr:
+        freq[x] = freq.get(x, 0) + 1
+    return freq`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Each insertion and lookup is amortized constant time for typical inputs — overall <code className="rounded bg-gray-100 px-1">O(n)</code> time and <code className="rounded bg-gray-100 px-1">O(n)</code> space for the map.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">
+          Using a list as a map for sparse integer keys; mutating dict while iterating; wrong order of insert vs check (Two Sum
+          needs to avoid using the same element twice).
+        </p>
+
+        <Divider />
         <p className="mb-2 mt-4">
           <span className="mr-2">🎯</span>
-          <strong>LeetCode This Week</strong>
+          <strong>LeetCode This Week (in order)</strong>
         </p>
-        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
-          <li>Two Sum — #1</li>
-          <li>Best Time to Buy and Sell Stock — #121</li>
-          <li>Contains Duplicate — #217</li>
-          <li>Valid Anagram — #242</li>
-          <li>Maximum Subarray — #53</li>
-          <li>Move Zeroes — #283</li>
-          <li>Longest Substring Without Repeating — #3</li>
+        <ol className="mb-4 list-decimal space-y-1 pl-6 marker:text-primary">
+          <li>Two Sum — Easy — #1</li>
+          <li>Best Time to Buy and Sell Stock — Easy — #121</li>
+          <li>Contains Duplicate — Easy — #217</li>
+          <li>Valid Anagram — Easy — #242</li>
+          <li>Maximum Subarray — Easy — #53</li>
+          <li>Move Zeroes — Easy — #283</li>
+          <li>Longest Substring Without Repeating Characters — Medium — #3</li>
         </ol>
-        <p>
+        <p className="mb-2">
           <span className="mr-2">📚</span>
-          <ResourceLink href="https://neetcode.io/">NeetCode</ResourceLink>
-          {' · '}
-          <ResourceLink href="https://www.geeksforgeeks.org/array-data-structure/">GFG Arrays</ResourceLink>
+          <strong>Go Deeper</strong>
         </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://neetcode.io/">NeetCode</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://www.geeksforgeeks.org/array-data-structure/">GeeksforGeeks — Arrays</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://leetcode.com/explore/learn/card/fun-with-arrays/">LeetCode Explore — Arrays</ResourceLink>
+          </li>
+        </ul>
       </AccordionRow>
 
       <AccordionRow
@@ -819,15 +1237,98 @@ len(arr); arr.append(60); arr.sort()`}</CodeBlock>
         title="DSA — Week 2"
         right="Stack, queue, linked list, binary search"
       >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STACK (LIFO)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
         <p className="mb-4">
-          <span className="mr-2">📖</span>
-          <strong>Stack, Queue, Linked List</strong>
+          A stack is Last-In-First-Out. You push on top and pop from top — like a stack of plates.
         </p>
-        <CodeBlock>{`stack = []
-stack.append(1); stack.pop()
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Many problems nest structure: parentheses, XML/HTML tags, undo history, DFS on graphs, and function call stacks in
+          runtimes.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Expression evaluators, route parsers, syntax checking in IDEs, and backtracking search in compilers and infra tools.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          In Python, a list is a fine stack: <code className="rounded bg-gray-100 px-1">append</code> for push, <code className="rounded bg-gray-100 px-1">pop()</code> for pop, <code className="rounded bg-gray-100 px-1">[-1]</code> to peek.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (classic Valid Parentheses idea):</p>
+        <CodeBlock>{`def is_valid_parentheses(s: str) -> bool:
+    stack = []
+    pairs = {")": "(", "}": "{", "]": "["}
+    for ch in s:
+        if ch in "({[":          # opening → push
+            stack.append(ch)
+        else:                     # closing → must match top
+            if not stack or stack[-1] != pairs[ch]:
+                return False
+            stack.pop()
+    return len(stack) == 0`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Each character is processed once — <code className="rounded bg-gray-100 px-1">O(n)</code> time, <code className="rounded bg-gray-100 px-1">O(n)</code> stack space in the worst case (all opening brackets).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">
+          Popping without checking <code className="rounded bg-gray-100 px-1">stack</code> empty; forgetting that only the most recent unmatched opener can pair with a closer.
+        </p>
 
-from collections import deque
-q = deque(); q.append(1); q.popleft()`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: QUEUE (FIFO)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A queue is First-In-First-Out: enqueue at the back, dequeue from the front — like a line at a coffee shop.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Fair scheduling, breadth-first traversal, buffering between producers and consumers, and level-order tree walks.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Job queues (SQS, RabbitMQ), request throttling, BFS in route planning, and streaming pipelines with ordered handoff.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Prefer <code className="rounded bg-gray-100 px-1">collections.deque</code> in Python: <code className="rounded bg-gray-100 px-1">append</code> / <code className="rounded bg-gray-100 px-1">popleft</code> are <code className="rounded bg-gray-100 px-1">O(1)</code>. Using <code className="rounded bg-gray-100 px-1">list.pop(0)</code> is <code className="rounded bg-gray-100 px-1">O(n)</code> — avoid it for queues.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE:</p>
+        <CodeBlock>{`from collections import deque
+
+q = deque()
+q.append(1)      # enqueue back
+q.append(2)
+first = q.popleft()  # dequeue front → 1
+print(first, list(q))  # 1 [2]`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          <code className="rounded bg-gray-100 px-1">deque</code> is a doubly-linked chain of blocks — fast ends, no full-array shifts.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Using a list as a queue with pop(0); dequeuing from an empty queue (guard with size checks).</p>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: BINARY SEARCH</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Binary search finds a target in a <strong>sorted</strong> array by repeatedly cutting the search space in half.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Linear scan is <code className="rounded bg-gray-100 px-1">O(n)</code>. Halving each step gives <code className="rounded bg-gray-100 px-1">O(log n)</code> — critical for huge sorted tables and many &quot;search space&quot; puzzles.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Database indexes, feature flags on sorted keys, timelines, and &quot;minimum feasible answer&quot; problems (binary search on
+          answer).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Maintain <code className="rounded bg-gray-100 px-1">lo</code> and <code className="rounded bg-gray-100 px-1">hi</code>. Compute <code className="rounded bg-gray-100 px-1">mid</code>. If <code className="rounded bg-gray-100 px-1">arr[mid]</code> is too small, move <code className="rounded bg-gray-100 px-1">lo</code> up; else move <code className="rounded bg-gray-100 px-1">hi</code> down. Watch boundary variants (first/last occurrence, insert position).
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (classic — return index or -1):</p>
         <CodeBlock>{`def binary_search(arr, target):
     lo, hi = 0, len(arr) - 1
     while lo <= hi:
@@ -835,21 +1336,43 @@ q = deque(); q.append(1); q.popleft()`}</CodeBlock>
         if arr[mid] == target:
             return mid
         if arr[mid] < target:
-            lo = mid + 1
+            lo = mid + 1   # discard left half
         else:
-            hi = mid - 1
+            hi = mid - 1   # discard right half
     return -1`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Each iteration removes about half the candidates — at most <code className="rounded bg-gray-100 px-1">⌈log₂ n⌉</code> iterations. Integer overflow in other languages needs careful <code className="rounded bg-gray-100 px-1">mid</code> formulas; Python integers are safe.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">
+          Applying binary search on unsorted data; infinite loops from wrong <code className="rounded bg-gray-100 px-1">lo/hi</code> updates; off-by-one when searching for boundaries.
+        </p>
+
+        <Divider />
         <p className="mb-2 mt-4">
           <span className="mr-2">🎯</span>
           <strong>LeetCode This Week</strong>
         </p>
-        <ol className="list-decimal pl-6 marker:text-primary">
-          <li>Valid Parentheses — #20</li>
-          <li>Min Stack — #155</li>
-          <li>Binary Search — #704</li>
-          <li>Search Insert Position — #35</li>
-          <li>Find Minimum in Rotated Sorted Array — #153</li>
+        <ol className="mb-4 list-decimal space-y-1 pl-6 marker:text-primary">
+          <li>Valid Parentheses — Easy — #20</li>
+          <li>Min Stack — Medium — #155</li>
+          <li>Binary Search — Easy — #704</li>
+          <li>Search Insert Position — Easy — #35</li>
+          <li>Find Minimum in Rotated Sorted Array — Medium — #153</li>
         </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://neetcode.io/">NeetCode — Stack / Binary Search</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://leetcode.com/explore/learn/card/binary-search/">LeetCode Explore — Binary Search</ResourceLink>
+          </li>
+        </ul>
       </AccordionRow>
 
       <AccordionRow
@@ -861,27 +1384,167 @@ q = deque(); q.append(1); q.popleft()`}</CodeBlock>
         title="DSA — Week 3"
         right="Trees, graphs, recursion"
       >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: BINARY TREES</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
         <p className="mb-4">
-          <span className="mr-2">📖</span>
-          <strong>Trees and Graphs</strong>
+          A binary tree is a hierarchy where each node has at most two children: <code className="rounded bg-gray-100 px-1">left</code> and <code className="rounded bg-gray-100 px-1">right</code>. The top node is the root.
         </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Trees model decisions, file folders, syntax, and sorted structures (BST). They are a core interview topic because
+          recursion and structure pair naturally.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          ASTs in compilers, indexes in databases (B-trees family), org charts, and many ML model structures (decision trees).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Nodes are objects (or structs) with pointers to children. Algorithms recurse: base case is <code className="rounded bg-gray-100 px-1">node is None</code>; recursive case combines results from left and right subtrees.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (node definition + depth):</p>
         <CodeBlock>{`class TreeNode:
-    def __init__(self, val=0):
+    def __init__(self, val=0, left=None, right=None):
         self.val = val
-        self.left = None
-        self.right = None`}</CodeBlock>
+        self.left = left
+        self.right = right
+
+def max_depth(root: TreeNode) -> int:
+    if root is None:
+        return 0
+    return 1 + max(max_depth(root.left), max_depth(root.right))`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          The call stack mirrors the tree height — <code className="rounded bg-gray-100 px-1">O(h)</code> auxiliary space for recursion, <code className="rounded bg-gray-100 px-1">O(n)</code> time to visit every node once.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Forgetting the null base case; confusing height vs depth; mutating shared nodes when cloning trees.</p>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: TREE TRAVERSALS (DFS ORDERS)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          DFS traversals differ by <em>when</em> you visit the root: preorder (root-left-right), inorder (left-root-right), postorder
+          (left-right-root).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Different orders extract different information — inorder on a BST yields sorted values; preorder helps serialize trees.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Query planners, expression evaluation, diffing hierarchical configs, and debugging recursive renders in front-end
+          frameworks.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Recursive functions append or process <code className="rounded bg-gray-100 px-1">root.val</code> at the correct point relative to left and right calls.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (inorder list):</p>
+        <CodeBlock>{`def inorder(root: TreeNode):
+    if not root:
+        return []
+    return inorder(root.left) + [root.val] + inorder(root.right)`}</CodeBlock>
+        <p className="mb-2 font-semibold text-gray-900">CODE (level order = BFS on a tree):</p>
+        <CodeBlock>{`from collections import deque
+
+def level_order(root: TreeNode):
+    if not root:
+        return []
+    out, q = [], deque([root])
+    while q:
+        node = q.popleft()
+        out.append(node.val)
+        if node.left:
+            q.append(node.left)
+        if node.right:
+            q.append(node.right)
+    return out`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          BFS uses a queue — visits level by level. DFS uses the call stack (or an explicit stack) — goes deep before wide.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Mixing up traversal orders; BFS without a queue; not handling skewed trees (linked-list shaped).</p>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: GRAPHS — BFS AND DFS</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A graph is nodes (vertices) and edges. Represented as an <strong>adjacency list</strong>: <code className="rounded bg-gray-100 px-1">dict[node, list[neighbor]]</code>.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Social networks, dependency resolution, maps, and any &quot;things connected to things&quot; problem reduce to graph reachability
+          or shortest path.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Build systems (DAGs), microservice dependency graphs, fraud link analysis, and network routing abstractions.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          <strong>DFS</strong>: go deep with recursion/stack; mark <code className="rounded bg-gray-100 px-1">visited</code> to avoid cycles. <strong>BFS</strong>: expand a frontier queue layer by layer — shortest path in unweighted graphs.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (DFS recursive):</p>
+        <CodeBlock>{`def dfs(graph, node, visited=None):
+    if visited is None:
+        visited = set()
+    if node in visited:
+        return
+    visited.add(node)
+    print(node)
+    for nei in graph.get(node, []):
+        dfs(graph, nei, visited)`}</CodeBlock>
+        <p className="mb-2 font-semibold text-gray-900">CODE (BFS):</p>
+        <CodeBlock>{`from collections import deque
+
+def bfs(graph, start):
+    visited = {start}
+    q = deque([start])
+    while q:
+        node = q.popleft()
+        print(node)
+        for nei in graph.get(node, []):
+            if nei not in visited:
+                visited.add(nei)
+                q.append(nei)`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Each vertex and edge is processed once with the right bookkeeping — typically <code className="rounded bg-gray-100 px-1">O(V + E)</code> time. Space is{' '}
+          <code className="rounded bg-gray-100 px-1">O(V)</code> for visited + frontier.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">
+          Infinite loops without visited; wrong graph representation for the problem; confusing BFS distance with weighted
+          shortest path (need Dijkstra, not covered here).
+        </p>
+
+        <Divider />
         <p className="mb-2 mt-4">
           <span className="mr-2">🎯</span>
           <strong>LeetCode This Week</strong>
         </p>
-        <ol className="list-decimal pl-6 marker:text-primary">
-          <li>Maximum Depth of Binary Tree — #104</li>
-          <li>Invert Binary Tree — #226</li>
-          <li>Symmetric Tree — #101</li>
-          <li>Binary Tree Level Order Traversal — #102</li>
-          <li>Number of Islands — #200</li>
-          <li>Course Schedule — #207</li>
+        <ol className="mb-4 list-decimal space-y-1 pl-6 marker:text-primary">
+          <li>Maximum Depth of Binary Tree — Easy — #104</li>
+          <li>Invert Binary Tree — Easy — #226</li>
+          <li>Symmetric Tree — Easy — #101</li>
+          <li>Binary Tree Level Order Traversal — Medium — #102</li>
+          <li>Number of Islands — Medium — #200</li>
+          <li>Course Schedule — Medium — #207</li>
         </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://neetcode.io/">NeetCode — Trees &amp; Graphs</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://visualgo.net/en/binarytree">Visualgo — Binary Tree</ResourceLink>
+          </li>
+        </ul>
       </AccordionRow>
 
       <AccordionRow
@@ -893,29 +1556,130 @@ q = deque(); q.append(1); q.popleft()`}</CodeBlock>
         title="DSA — Week 4"
         right="Heaps, DP, greedy, backtracking"
       >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: WHAT IS DYNAMIC PROGRAMMING?</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
         <p className="mb-4">
-          <span className="mr-2">📖</span>
-          <strong>Dynamic Programming</strong>
+          Dynamic Programming (DP) solves problems by combining answers to <strong>overlapping subproblems</strong> and storing those
+          answers to avoid recomputation.
         </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Naive recursion often revisits the same states exponentially (e.g. Fibonacci). Memoization or tabulation turns that
+          into polynomial time.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Resource allocation, pricing, string similarity in search, bioinformatics alignment, and any optimization with
+          sequential decisions shows DP patterns.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          1) Identify state (often index + constraint). 2) Write recurrence — how today&apos;s answer depends on smaller subproblems.
+          3) Add base cases. 4) Implement top-down (memo) or bottom-up (table). 5) Check time/space.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (Fibonacci — top-down memo):</p>
         <CodeBlock>{`def fib(n, memo=None):
     memo = {} if memo is None else memo
     if n in memo:
-        return memo[n]
+        return memo[n]       # already solved this subproblem
     if n <= 1:
-        return n
-    memo[n] = fib(n-1, memo) + fib(n-2, memo)
+        return n             # base cases
+    memo[n] = fib(n - 1, memo) + fib(n - 2, memo)
     return memo[n]`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Each <code className="rounded bg-gray-100 px-1">fib(k)</code> for <code className="rounded bg-gray-100 px-1">k ≤ n</code> is computed once — <code className="rounded bg-gray-100 px-1">O(n)</code> time, <code className="rounded bg-gray-100 px-1">O(n)</code> memo space. Without memo, time is exponential.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Wrong base case; mutating shared state across calls; forgetting that not every recursion benefits from DP (need overlap).</p>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: CLIMBING STAIRS (CLASSIC DP)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          You can climb 1 or 2 steps at a time. Count distinct ways to reach step <code className="rounded bg-gray-100 px-1">n</code> (LeetCode #70).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          It is the Fibonacci pattern in disguise — ways(n) = ways(n-1) + ways(n-2) with small bases.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Interviewers use it to test whether you can recognize recurrence and implement <code className="rounded bg-gray-100 px-1">O(n)</code> DP vs exponential recursion.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          From step <code className="rounded bg-gray-100 px-1">n</code> you arrived from <code className="rounded bg-gray-100 px-1">n-1</code> or <code className="rounded bg-gray-100 px-1">n-2</code>. Sum the ways. Bottom-up fills an array from 0..n.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE (bottom-up):</p>
+        <CodeBlock>{`def climb_stairs(n: int) -> int:
+    if n <= 2:
+        return n
+    dp = [0] * (n + 1)
+    dp[1] = 1
+    dp[2] = 2
+    for i in range(3, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+    return dp[n]`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Loop runs <code className="rounded bg-gray-100 px-1">n</code> times — <code className="rounded bg-gray-100 px-1">O(n)</code> time. You can optimize to <code className="rounded bg-gray-100 px-1">O(1)</code> space by keeping only last two values.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Off-by-one on array size; using <code className="rounded bg-gray-100 px-1">fib(n)</code> indexing instead of stair semantics for base cases.</p>
+
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: WHEN YOU NEED DP (QUICK SIGNALS)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Ask: &quot;Can I define a state and does the optimal/count solution reuse smaller states?&quot; If yes, try DP.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Greedy fails when local choices need global context. DP considers all compatible substructures.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Scheduling with constraints, knapsack-style tradeoffs, and parsing problems (string DP) appear in advanced interviews.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <ul className="mb-4 list-disc space-y-1 pl-6 text-gray-800">
+          <li>Optimization: min/max cost or count of ways.</li>
+          <li>Decision sequence: include/exclude item, match characters, cut string.</li>
+          <li>Draw the recurrence on paper before coding.</li>
+        </ul>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Well-defined states prevent exponential branching; the table order must respect dependencies (compute prerequisites
+          first).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Ambiguous state; filling table in wrong order; mixing greedy intuition where DP is required.</p>
+
+        <Divider />
         <p className="mb-2 mt-4">
           <span className="mr-2">🎯</span>
           <strong>LeetCode This Week</strong>
         </p>
-        <ol className="list-decimal pl-6 marker:text-primary">
-          <li>Climbing Stairs — #70</li>
-          <li>House Robber — #198</li>
-          <li>Coin Change — #322</li>
-          <li>Longest Increasing Subsequence — #300</li>
-          <li>Unique Paths — #62</li>
+        <ol className="mb-4 list-decimal space-y-1 pl-6 marker:text-primary">
+          <li>Climbing Stairs — Easy — #70</li>
+          <li>House Robber — Medium — #198</li>
+          <li>Coin Change — Medium — #322</li>
+          <li>Longest Increasing Subsequence — Medium — #300</li>
+          <li>Unique Paths — Medium — #62</li>
         </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://neetcode.io/">NeetCode — DP</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://leetcode.com/discuss/study-guide">LeetCode — DP discussions</ResourceLink>
+          </li>
+        </ul>
       </AccordionRow>
 
       <AccordionRow
