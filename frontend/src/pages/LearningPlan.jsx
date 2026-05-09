@@ -302,6 +302,339 @@ function AccordionRow({ id, openId, setOpenId, badge, badgeClass, title, right, 
   )
 }
 
+/** Shared system-design weeks — idPrefix "py-sd" (Python track) or "sd" (System Design topic card) */
+function SystemDesignWeeks({ openId, setOpenId, idPrefix }) {
+  const p = idPrefix
+  return (
+    <>
+      <AccordionRow
+        id={`${p}-w1`}
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="SD Week 1"
+        badgeClass="bg-orange-500"
+        title="System Design — Week 1: Fundamentals"
+        right="Internet, LB, cache, DB, CAP"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: HOW THE INTERNET WORKS (DNS, HTTP, TCP/IP)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          The internet is a network of networks. <strong>TCP/IP</strong> delivers bytes reliably between hosts.{' '}
+          <strong>DNS</strong> maps human-readable names (google.com) to IP addresses. <strong>HTTP</strong> is the request/response protocol
+          browsers and APIs use on top of TCP.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          Without layered models, every app would reinvent routing, reliability, and naming. Standards let Google, Amazon, and
+          Microsoft interoperate globally.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Google runs massive DNS and edge infrastructure. Amazon API Gateway and CloudFront sit on HTTP. Microsoft Azure
+          Traffic Manager uses DNS for geo-routing. Every microservice you design assumes HTTP + TLS + DNS.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Client resolves DNS → opens TCP connection to IP:443 → TLS handshake → sends <code className="rounded bg-gray-100 px-1">GET /path HTTP/1.1</code> with headers → server responds with status + body. HTTP/2 multiplexes streams; HTTP/3 uses QUIC over UDP.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE / CLI:</p>
+        <CodeBlock>{`# See DNS resolution (example)
+# dig api.stripe.com +short
+
+# Simple HTTP GET (verbose)
+# curl -v https://example.com`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Each hop (resolver, authoritative DNS, load balancer, app server) adds latency. Caching DNS and TLS session resumption
+          reduces repeated work.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">
+          Confusing DNS TTL with HTTP cache headers; ignoring connection limits; designing APIs without idempotency for retries.
+        </p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: LOAD BALANCERS</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A load balancer spreads incoming traffic across multiple healthy backend instances so no single server is overloaded
+          and you can survive failures.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">
+          One machine cannot scale forever. LBs add horizontal scale and health checks so bad nodes stop receiving traffic.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          AWS ALB/NLB, GCP GLB, Azure Front Door, and on-prem F5/Nginx layers front almost every production service at Amazon,
+          Google, and Microsoft.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Algorithms: round-robin, least connections, IP hash (sticky sessions). L4 (TCP) vs L7 (HTTP) balancing. TLS
+          termination at the edge saves CPU on app servers but centralizes certificate management.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Health probes mark instances in/out of rotation. During deploys, traffic drains gracefully (connection draining).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">No health checks; thundering herd on cold instances; forgetting sticky sessions break cache affinity.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: CACHING (REDIS, CDN)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A cache stores hot data in fast storage (RAM or edge POPs). <strong>CDN</strong> caches static assets geographically;{' '}
+          <strong>Redis</strong> caches dynamic read-heavy data in memory.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Databases and origin servers are slower and more expensive per query than RAM or edge caches.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Netflix caches video manifests and images on CDN. Amazon product pages cache fragments. Microsoft Teams caches session
+          data in regional caches.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Cache-aside: app reads cache, on miss loads DB and populates cache. TTL + eviction policies (LRU). Invalidate on
+          writes or accept temporary inconsistency.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">
+          Cache hit → fast path. Cache miss → slower path + populate. Stampede risk if many misses at once — use locking or
+          single-flight.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">No TTL (stale forever); caching non-idempotent user-specific data globally; ignoring cache key design.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: DATABASES (SQL VS NOSQL)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          <strong>SQL</strong> databases (Postgres, MySQL) are relational, ACID-friendly, strong for joins. <strong>NoSQL</strong> (DynamoDB,
+          Cassandra, Mongo) trades flexibility and scale patterns for different consistency models.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Different access patterns need different storage: OLTP, analytics, wide-column, document, graph.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Amazon built Dynamo for always-on carts; Google uses Spanner and Bigtable; Microsoft SQL Server + Cosmos DB cover
+          enterprise and global document/API patterns.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Pick SQL when you need transactions + ad-hoc queries. Pick NoSQL when you need partition-key scalability, flexible
+          schema, or huge write throughput with defined tradeoffs.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">Wrong choice → painful migrations. Hybrid is normal: OLTP RDBMS + search (Elasticsearch) + object store.</p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Using Mongo for heavy relational reporting; sharding RDBMS without understanding hotspots.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: CAP THEOREM</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          In a distributed system under partitions, you cannot simultaneously guarantee <strong>C</strong>onsistency, <strong>A</strong>vailability, and{' '}
+          <strong>P</strong>artition tolerance — you pick tradeoffs along that triangle (practical systems usually choose CP or AP under
+          partition).
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Networks fail; designers must know what degrades: stale reads, errors, or partial outages.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Banks lean consistent; social feeds may favor availability + eventual consistency. Interviewers want you to name what
+          your product chooses when a datacenter partition happens.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          <strong>CP</strong>: block or error rather than return inconsistent data. <strong>AP</strong>: keep serving possibly stale data. Real systems
+          add latency budgets, quorum (e.g. Dynamo-style), and repair.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">During partition, UX and correctness tension surfaces — explain how you detect and heal inconsistency.</p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Claiming &quot;we have all three&quot;; ignoring real-world latency vs theoretical CAP.</p>
+        <Divider />
+        <p className="mb-4">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <p className="mb-4">Sketch DNS → LB → API → cache → DB for a product you use. Label one read path and one write path.</p>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://github.com/donnemartin/system-design-primer">System Design Primer</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://www.youtube.com/@ByteByteGo">ByteByteGo</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id={`${p}-w2`}
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="SD Week 2"
+        badgeClass="bg-orange-500"
+        title="System Design — Week 2: Design a URL Shortener"
+        right="Requirements → scale → design"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STEP 1 — CLARIFY REQUIREMENTS</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">Functional: shorten long URL → short code; redirect; optional custom alias, expiry, analytics clicks.</p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Ambiguous asks waste time; interviewers reward structured questions.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">PMs write PRDs; engineers validate SLAs, auth, and abuse scenarios the same way.</p>
+        <p className="mb-1 font-semibold text-gray-900">NON-FUNCTIONAL:</p>
+        <p className="mb-4">Latency (redirect p99), availability, consistency of mapping, rate limits, GDPR delete.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STEP 2 — ESTIMATE SCALE</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Assume 100M new URLs/month, 10:1 read:write, 5-year retention. QPS = reads/sec + writes/sec. Storage = record size ×
+          count. Bandwidth for redirects.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">Order-of-magnitude drives DB choice, cache size, and sharding key (short_code).</p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Ignoring hot keys (viral links); skipping replication factor in storage math.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STEP 3 — HIGH-LEVEL DESIGN</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Clients → API service → ID generator (snowflake / counter range) → encode Base62 → write to DB → redirect service reads
+          cache/DB.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">CODE (BASE62 SKETCH):</p>
+        <CodeBlock>{`const CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+function encodeBase62(num) {
+  let s = "";
+  while (num > 0) { s = CHARS[num % 62] + s; num = Math.floor(num / 62); }
+  return s || "0";
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STEP 4 — DEEP DIVE</p>
+        <p className="mb-4">
+          Collision handling; DB primary key on short_code; redirect 302 vs 301; analytics async via queue; rate limiting per
+          API key; bloom filter optional for existence.
+        </p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STEP 5 — TRADEOFFS</p>
+        <p className="mb-4">
+          Strong consistency vs redirect latency; SQL simplicity vs Dynamo partition scalability; global edge cache vs origin
+          invalidation complexity.
+        </p>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <p className="mb-4">Redo the estimate with your own assumptions. Time yourself: 5 min requirements, 10 min math, 20 min diagram.</p>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://www.educative.io/courses/grokking-the-system-design-interview">Educative — Grokking SD</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id={`${p}-w3`}
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="SD Week 3"
+        badgeClass="bg-orange-500"
+        title="System Design — Week 3: Twitter, Netflix, Uber"
+        right="Complex systems walkthrough"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: DESIGN TWITTER (SIMPLIFIED FEED)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">Users post tweets; followers see a timeline — fan-out on write vs read, ranking, media storage.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Post → write to tweets store + push to fan-out service (for celebs, pull model + merge). Timeline service assembles,
+          caches home timelines in Redis, ML ranker scores candidates.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Fan-out write for 100M followers per tweet; ignoring eventual consistency on counts.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: DESIGN NETFLIX (STREAMING OVERVIEW)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">Encode video at many bitrates → object storage → Open Connect CDN edge caches → client adaptive bitrate.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">Metadata in NoSQL/RDBMS; viewing history drives recommendations (separate ML pipeline).</p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Ignoring DRM; serving video from app servers instead of CDN.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: DESIGN UBER (LOCATION & MATCHING)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">Drivers heartbeat location; riders request trips; matching finds nearby drivers; pricing surge logic.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          Geospatial index (grid, quadtree, Google S2); dispatch service; trip state machine; payments and fraud as separate
+          services.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Brute-force distance to all drivers; no idempotency on ride creation.</p>
+        <p className="mb-2 mt-4">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://www.youtube.com/@ByteByteGo">ByteByteGo — case studies</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id={`${p}-w4`}
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="SD Week 4"
+        badgeClass="bg-orange-500"
+        title="System Design — Week 4: Interview Execution"
+        right="45 minutes, pitfalls, signals"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STRUCTURE IN 45 MINUTES</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <ol className="mb-4 list-decimal space-y-2 pl-6 text-gray-800">
+          <li>0–5 min: clarify functional + non-functional requirements.</li>
+          <li>5–12 min: back-of-envelope QPS, storage, bandwidth.</li>
+          <li>12–25 min: draw clients, API, services, data stores, async flows.</li>
+          <li>25–40 min: deep dive (scaling DB, caching, consistency, failure).</li>
+          <li>40–45 min: tradeoffs, monitoring, future work.</li>
+        </ol>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: COMMON MISTAKES</p>
+        <ul className="mb-4 list-disc space-y-2 pl-6 text-gray-800">
+          <li>Jumping to tools before requirements.</li>
+          <li>No estimates or absurd numbers without sanity check.</li>
+          <li>Single box &quot;App&quot; with no data flow.</li>
+          <li>Ignoring failure modes (DB down, partition).</li>
+          <li>No tradeoffs — everything cannot be strongest consistency and lowest latency.</li>
+        </ul>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: WHAT INTERVIEWERS LOOK FOR</p>
+        <p className="mb-4">
+          Structured communication, sensible tradeoffs, familiarity with real components (LB, cache, DB, queue), and curiosity
+          when you ask clarifying questions — the same skills Google, Amazon, and Microsoft expect from mid/senior hires.
+        </p>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <p className="mb-4">Record yourself designing paste-bin or chat. Listen for silence gaps and jargon without definition.</p>
+      </AccordionRow>
+    </>
+  )
+}
+
 function PythonCurriculum({ openId, setOpenId }) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -1682,50 +2015,7 @@ def bfs(graph, start):
         </ul>
       </AccordionRow>
 
-      <AccordionRow
-        id="py-sd"
-        openId={openId}
-        setOpenId={setOpenId}
-        badge="Phase 3"
-        badgeClass="bg-orange-500"
-        title="System Design"
-        right="Week 5–6, for SDE-2 and above"
-      >
-        <p className="mb-4">
-          <span className="mr-2">📖</span>
-          <strong>System Design Fundamentals</strong>
-        </p>
-        <ul className="mb-4 list-disc space-y-2 pl-6">
-          <li>
-            <strong>Load balancer</strong> — spread traffic across instances.
-          </li>
-          <li>
-            <strong>Caching</strong> — Redis/Memcached; hits vs misses.
-          </li>
-          <li>
-            <strong>DB scaling</strong> — replication, sharding, read replicas.
-          </li>
-          <li>
-            <strong>CDN</strong> — edge caching for static assets.
-          </li>
-          <li>
-            <strong>Message queues</strong> — async work, decoupling services.
-          </li>
-        </ul>
-        <p className="mb-2 font-semibold">How to answer</p>
-        <ol className="list-decimal space-y-1 pl-6">
-          <li>Clarify requirements and constraints</li>
-          <li>Estimate scale (QPS, storage, latency)</li>
-          <li>High-level diagram</li>
-          <li>Deep dive + tradeoffs</li>
-        </ol>
-        <p className="mt-4">
-          <span className="mr-2">📚</span>
-          <ResourceLink href="https://github.com/donnemartin/system-design-primer">System Design Primer</ResourceLink>
-          {' · '}
-          <ResourceLink href="https://www.youtube.com/@ByteByteGo">ByteByteGo</ResourceLink>
-        </p>
-      </AccordionRow>
+      <SystemDesignWeeks openId={openId} setOpenId={setOpenId} idPrefix="py-sd" />
 
       <AccordionRow
         id="py-beh"
@@ -1736,21 +2026,189 @@ def bfs(graph, start):
         title="Interview Prep"
         right="Ongoing, parallel to all phases"
       >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STAR FRAMEWORK</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
         <p className="mb-4">
-          <span className="mr-2">📖</span>
-          <strong>Behavioral — STAR</strong>
+          <strong>S</strong>ituation (context, one sentence) → <strong>T</strong>ask (your responsibility) → <strong>A</strong>ction (what <em>you</em> did, stepwise) →{' '}
+          <strong>R</strong>esult (metric, business outcome, learning).
         </p>
-        <p className="mb-4">Situation → Task → Action → Result. Quantify impact whenever possible.</p>
-        <p className="mb-2 font-semibold">Amazon Leadership Principles (prepare STAR per LP)</p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Interviewers grade signal density. STAR prevents rambling and proves ownership.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Google, Amazon, Microsoft, Meta, PayPal, and Adobe all use behavioral rounds; Amazon explicitly maps stories to
+          Leadership Principles.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Using &quot;we&quot; with no I; no numbers; no reflection; stories that blame others.</p>
+        <Divider />
+        <p className="mb-4 text-lg font-bold text-gray-900">TOP 20 BEHAVIORAL QUESTIONS — STAR SCAFFOLDS</p>
+        <p className="mb-3 text-sm text-gray-700">
+          For each: pick a real project. Write 4 bullets (S,T,A,R). Keep under 90s spoken. Quantify (latency %, revenue, users,
+          bugs prevented).
+        </p>
+        <ol className="mb-6 list-decimal space-y-4 pl-6 text-[14px] leading-relaxed marker:text-primary">
+          <li>
+            <strong>Tell me about yourself</strong> — Template: Present role/skills → 1 past win → why this team/company. End with
+            what you want to learn next.
+          </li>
+          <li>
+            <strong>Greatest strength</strong> — Pick one (e.g. debugging). STAR: production outage, you traced root cause, cut MTTR
+            by X%.
+          </li>
+          <li>
+            <strong>Greatest weakness</strong> — Real skill gap + concrete fix (course, mentor, habit). Avoid &quot;perfectionism.&quot;
+          </li>
+          <li>
+            <strong>Why this company</strong> — 3 specifics: product you use, technical blog/talk, value that matches your story.
+          </li>
+          <li>
+            <strong>Challenge overcome</strong> — Ambiguous requirements; you clarified scope, shipped v1, measured adoption.
+          </li>
+          <li>
+            <strong>Conflict with teammate</strong> — Disagreed on design; data/experiment resolved; relationship intact.
+          </li>
+          <li>
+            <strong>Leadership</strong> — No title needed: you drove alignment, delegated, unblocked juniors.
+          </li>
+          <li>
+            <strong>Failed project</strong> — What broke, early signal missed, what you changed next time.
+          </li>
+          <li>
+            <strong>5-year plan</strong> — Skill goals (e.g. distributed systems) tied to business impact, not job title vanity.
+          </li>
+          <li>
+            <strong>Why leaving</strong> — Positive framing: seeking scope X / mission Y; never trash current employer.
+          </li>
+          <li>
+            <strong>Disagreed with manager</strong> — Presented data; committed after decision; outcome.
+          </li>
+          <li>
+            <strong>Missed deadline</strong> — Early comms, cut scope, postmortem, new estimate process.
+          </li>
+          <li>
+            <strong>Innovation</strong> — Small automation or feature that saved time/money; how you validated it.
+          </li>
+          <li>
+            <strong>Prioritization</strong> — Competing asks; RICE/impact matrix; stakeholder comms.
+          </li>
+          <li>
+            <strong>Technical decision</strong> — Tradeoffs (cost, latency, maintainability); what you would revisit.
+          </li>
+          <li>
+            <strong>Ambiguity</strong> — Undefined problem; you prototyped, got feedback, iterated.
+          </li>
+          <li>
+            <strong>Mentoring</strong> — Onboarding plan, code review habits, measurable growth of mentee.
+          </li>
+          <li>
+            <strong>Learned fast</strong> — New stack in N weeks; resources; first shipped contribution.
+          </li>
+          <li>
+            <strong>Proudest accomplishment</strong> — Business + technical angle; team credit + your slice.
+          </li>
+          <li>
+            <strong>Questions for us</strong> — Team metrics, on-call, tech debt budget, success in first 90 days.
+          </li>
+        </ol>
+        <Divider />
+        <p className="mb-4 text-lg font-bold text-gray-900">AMAZON — 14 LEADERSHIP PRINCIPLES (STUDY FORMAT)</p>
         <p className="mb-4 text-sm text-gray-700">
-          Customer Obsession, Ownership, Invent and Simplify, Are Right A Lot, Learn and Be Curious, Hire and Develop the
-          Best, Insist on Highest Standards, Think Big, Bias for Action, Frugality, Earn Trust, Dive Deep, Have Backbone,
-          Deliver Results.
+          For each: (1) one-line definition (2) question flavor (3) STAR focus — what you did, not the team abstractly.
         </p>
-        <p>
+        <ul className="mb-6 list-disc space-y-3 pl-6 text-[14px] leading-relaxed marker:text-primary">
+          <li>
+            <strong>Customer Obsession</strong> — &quot;Tell me about a time you fought for the user.&quot; — Reduced friction / defect affecting
+            customers; metric.
+          </li>
+          <li>
+            <strong>Ownership</strong> — &quot;End-to-end delivery.&quot; — You drove prod issue past your team boundary.
+          </li>
+          <li>
+            <strong>Invent and Simplify</strong> — &quot;Improved process/tooling.&quot; — Before/after complexity.
+          </li>
+          <li>
+            <strong>Are Right, A Lot</strong> — &quot;Strong judgment under uncertainty.&quot; — Data + intuition call with outcome.
+          </li>
+          <li>
+            <strong>Learn and Be Curious</strong> — &quot;Self-taught gap.&quot; — Course, book, internal doc; applied on job.
+          </li>
+          <li>
+            <strong>Hire and Develop the Best</strong> — Interview bar, mentoring plan, feedback story.
+          </li>
+          <li>
+            <strong>Insist on the Highest Standards</strong> — Caught quality issue before launch; tests/monitoring added.
+          </li>
+          <li>
+            <strong>Think Big</strong> — Bold bet scoped into milestones; stakeholder buy-in.
+          </li>
+          <li>
+            <strong>Bias for Action</strong> — Reasonable risk; shipped experiment; learned fast.
+          </li>
+          <li>
+            <strong>Frugality</strong> — Did more with less; cost/latency saved.
+          </li>
+          <li>
+            <strong>Earn Trust</strong> — Transparent about mistake; rebuilt credibility.
+          </li>
+          <li>
+            <strong>Dive Deep</strong> — Metrics/logs to root cause; no hand-waving.
+          </li>
+          <li>
+            <strong>Have Backbone; Disagree and Commit</strong> — Constructive dissent; supported final call.
+          </li>
+          <li>
+            <strong>Deliver Results</strong> — Clear goal, timeline, outcome vs target.
+          </li>
+        </ul>
+        <Divider />
+        <p className="mb-4 text-lg font-bold text-gray-900">COMPANY-SPECIFIC INTERVIEW PREP</p>
+        <p className="mb-1 font-semibold text-gray-900">Google</p>
+        <p className="mb-3 text-sm text-gray-700">
+          Googleyness + structured problem solving. Prepare 2–3 stories on collaboration, ambiguity, and ethics. Expect deep
+          follow-ups: &quot;What else?&quot; Technical screens emphasize algorithms and communication.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">Microsoft</p>
+        <p className="mb-3 text-sm text-gray-700">
+          Growth mindset narrative. Emphasize how you seek feedback and improve systems. Often scenario + &quot;as appropriate&quot;
+          depth; clarify assumptions aloud.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">PayPal</p>
+        <p className="mb-3 text-sm text-gray-700">
+          Reliability, fraud awareness, customer trust. Stories on secure handling of money movement, incident response, and
+          cross-functional work with risk/compliance.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">Adobe</p>
+        <p className="mb-3 text-sm text-gray-700">
+          Craft + creativity alongside engineering. Portfolio of polished UX or creative problem solving helps. Tie features to
+          customer delight metrics.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">Meta</p>
+        <p className="mb-4 text-sm text-gray-700">
+          Move fast with measurable impact. Prepare stories on velocity, A/B tests, and scaling products. Know why Meta over
+          peers (specific teams/products).
+        </p>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice Problems</strong>
+        </p>
+        <ol className="mb-6 list-decimal space-y-1 pl-6 marker:text-primary">
+          <li>Record STAR answers for Q1–Q10; listen back; cut filler words.</li>
+          <li>Write 14 Amazon LP headlines; map two stories per LP max (reuse allowed).</li>
+          <li>Mock with peer: random LP, 2-minute answer, rapid follow-ups.</li>
+        </ol>
+        <p className="mb-2">
           <span className="mr-2">📚</span>
-          <ResourceLink href="https://www.amazon.jobs/content/en/our-workplace/leadership-principles">Amazon LPs</ResourceLink>
+          <strong>Go Deeper</strong>
         </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://www.amazon.jobs/content/en/our-workplace/leadership-principles">Amazon Leadership Principles</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://www.biginterview.com/">Big Interview (behavioral)</ResourceLink>
+          </li>
+        </ul>
       </AccordionRow>
 
       <AccordionRow
@@ -1762,22 +2220,1179 @@ def bfs(graph, start):
         title="Target Problem Counts"
         right="Realistic weekly targets"
       >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: WEEKLY SCHEDULE (SAMPLE PROBLEM IDS)</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
         <p className="mb-4">
-          <span className="mr-2">📖</span>
-          <strong>LeetCode Strategy</strong>
+          A steady cadence beats random grinding. Below: representative LeetCode numbers — swap for your list, keep the pattern
+          mix.
         </p>
-        <ul className="mb-4 list-disc space-y-2 pl-6">
-          <li>Weeks 1–2: ~3 Easy/day</li>
-          <li>Weeks 3–4: 2 Easy + 1 Medium/day</li>
-          <li>Weeks 5–6: 1 Easy + 2 Medium/day</li>
-          <li>Targets: 75+ Easy, 50+ Medium, 10+ Hard (adjust to your timeline)</li>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <ul className="mb-4 list-disc space-y-2 pl-6 text-sm text-gray-800">
+          <li>
+            <strong>Weeks 1–2 (Arrays/Hashing)</strong>: Mon #1 Two Sum, Tue #217 Contains Duplicate, Wed #121 Best Time to Buy Stock,
+            Thu #238 Product of Array Except Self, Fri #128 Longest Consecutive, Weekend review + #347 Top K Frequent Elements.
+          </li>
+          <li>
+            <strong>Weeks 3–4 (Two pointers / Stack)</strong>: #15 3Sum, #11 Container With Most Water, #42 Trapping Rain Water, #20 Valid
+            Parentheses, #155 Min Stack, #739 Daily Temperatures.
+          </li>
+          <li>
+            <strong>Weeks 5–6 (Binary search / Trees)</strong>: #704 Binary Search, #33 Search Rotated Sorted Array, #104 Max Depth, #226
+            Invert Tree, #235 LCA BST, #98 Validate BST.
+          </li>
+          <li>
+            <strong>Weeks 7–8 (Graphs / DP)</strong>: #200 Number of Islands, #207 Course Schedule, #70 Climbing Stairs, #198 House Robber,
+            #322 Coin Change, #300 LIS.
+          </li>
         </ul>
-        <p>
-          <span className="mr-2">📚</span>
-          <ResourceLink href="https://neetcode.io/practice">NeetCode 150</ResourceLink>
-          {' · '}
-          <ResourceLink href="https://www.techinterviewhandbook.org/grind75">Grind 75</ResourceLink>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">You build pattern muscle memory; revisit missed problems in spaced repetition.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: PATTERN RECOGNITION GUIDE</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <ul className="mb-4 list-disc space-y-2 pl-6 text-sm text-gray-800">
+          <li>See sorted array + pair/target → two pointers or binary search.</li>
+          <li>See substring with constraint → sliding window + hashmap counts.</li>
+          <li>See nested structure / undo → stack.</li>
+          <li>See shortest path unweighted graph → BFS.</li>
+          <li>See dependency / ordering → topological sort (DFS/BFS).</li>
+          <li>See count ways / min cost with subproblems → DP.</li>
+        </ul>
+        <Divider />
+        <p className="mb-4 text-lg font-bold text-gray-900">TOP 10 PATTERNS (~80% OF INTERVIEWS)</p>
+        <ol className="mb-6 list-decimal space-y-1 pl-6 text-sm marker:text-primary">
+          <li>Hash map / frequency</li>
+          <li>Two pointers</li>
+          <li>Sliding window</li>
+          <li>Binary search (incl. on answer)</li>
+          <li>BFS / DFS</li>
+          <li>Heap / top-K</li>
+          <li>Intervals / merge / sweep</li>
+          <li>Linked list (dummy node, fast/slow)</li>
+          <li>Tree recursion + BST property</li>
+          <li>1D/2D DP and greedy checks</li>
+        </ol>
+        <Divider />
+        <p className="mb-4 text-lg font-bold text-gray-900">TIME COMPLEXITY CHEAT SHEET</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">Big-O describes how runtime grows with input size n.</p>
+        <CodeBlock>{`O(1)     — constant (hash lookup average, array index)
+O(log n) — binary search, balanced BST height
+O(n)     — single pass, BFS/DFS visit each node once in a tree
+O(n log n) — sorting, many heap operations per element
+O(n^2)   — nested loops on same array (naive)
+O(2^n)   — brute-force subsets (avoid via DP)`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Forgetting sort cost; ignoring space recursion stack O(h).</p>
+        <Divider />
+        <p className="mb-4 text-lg font-bold text-gray-900">SPACE COMPLEXITY CHEAT SHEET</p>
+        <CodeBlock>{`O(1) extra  — two pointers, iterative, in-place swap
+O(n) extra  — copy array, hash map storing n keys
+O(h) stack  — recursion depth = tree height
+O(n) queue  — BFS frontier worst case`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Declaring huge auxiliary matrix when rolling array suffices.</p>
+        <Divider />
+        <p className="mb-1 font-semibold text-gray-900">TARGET COUNTS (ADJUST TO TIMELINE)</p>
+        <ul className="mb-6 list-disc space-y-1 pl-6">
+          <li>75+ Easy, 50+ Medium, 10+ Hard — minimum strong baseline for many FAANG loops.</li>
+        </ul>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice Problems</strong>
         </p>
+        <ol className="mb-6 list-decimal space-y-1 pl-6 marker:text-primary">
+          <li>Blind 75 / NeetCode 150 — pick one list and finish core tagged problems.</li>
+          <li>Re-solve any problem that took &gt;45 min without notes after 3 days.</li>
+          <li>One timed mock weekly (2 problems, 70 min) with spoken complexity analysis.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://neetcode.io/practice">NeetCode 150</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://www.techinterviewhandbook.org/grind75">Grind 75</ResourceLink>
+          </li>
+          <li>
+            <ResourceLink href="https://leetcode.com/discuss/study-guide">LeetCode study guides</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+    </div>
+  )
+}
+
+function JavaCurriculum({ openId, setOpenId }) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <AccordionRow
+        id="java-d1"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="Java Day 1"
+        badgeClass="bg-red-600"
+        title="Java — Day 1: Basics"
+        right="Types, arrays, control flow, methods, Scanner"
+      >
+        <p className="mb-4 text-sm text-gray-700">
+          Java powers large-scale backends at <strong>Google</strong> (many internal services), <strong>Amazon</strong> (AWS SDKs, retail services), and{' '}
+          <strong>Microsoft</strong> (Azure, enterprise). Strong typing and the JVM help huge teams share code safely.
+        </p>
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: VARIABLES AND DATA TYPES</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Java variables must declare a type. Core primitives: <code className="rounded bg-gray-100 px-1">int</code>, <code className="rounded bg-gray-100 px-1">double</code>, <code className="rounded bg-gray-100 px-1">boolean</code>; reference type{' '}
+          <code className="rounded bg-gray-100 px-1">String</code> holds immutable text.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Types catch errors at compile time and document intent — critical in million-line codebases.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">Services pass DTOs with explicit fields; configs parsed into typed objects; fewer prod surprises.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          <code className="rounded bg-gray-100 px-1">final</code> for constants; widening casts (int→double) implicit; narrowing requires explicit cast.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE:</p>
+        <CodeBlock>{`public class TypesDemo {
+  public static void main(String[] args) {
+    int count = 42;                 // 32-bit integer
+    double price = 19.99;           // floating point
+    String name = "CrackWithAI";   // capital S — reference type
+    boolean active = true;
+    System.out.println(name + " " + count + " " + price + " " + active);
+  }
+}`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">WHAT HAPPENS:</p>
+        <p className="mb-4">JVM loads class, runs <code className="rounded bg-gray-100 px-1">main</code>, allocates locals on stack, prints concatenated string.</p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Using == on Strings (use <code className="rounded bg-gray-100 px-1">equals</code>); forgetting semicolons; <code className="rounded bg-gray-100 px-1">String s = 'a';</code> invalid.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: ARRAYS AND ARRAYLISTS</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          Arrays have fixed length; <code className="rounded bg-gray-100 px-1">ArrayList</code> is a resizable list implementing <code className="rounded bg-gray-100 px-1">List</code>.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Batch processing and collections APIs need ordered storage; ArrayList gives amortized O(1) append.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">Return lists from DAOs; buffer rows before bulk insert; temporary in-memory structures in Spark/Java apps.</p>
+        <CodeBlock>{`import java.util.ArrayList;
+import java.util.Arrays;
+
+public class ListsDemo {
+  public static void main(String[] args) {
+    int[] nums = {10, 20, 30};           // fixed size
+    nums[0] = 15;
+
+    ArrayList<String> companies = new ArrayList<>();
+    companies.add("Google");
+    companies.add("Amazon");
+    companies.remove("Amazon");
+    System.out.println(companies.size());
+    System.out.println(Arrays.toString(nums));
+  }
+}`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Array index out of bounds; using raw types instead of <code className="rounded bg-gray-100 px-1">ArrayList&lt;String&gt;</code>.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: CONTROL FLOW</p>
+        <CodeBlock>{`public class FlowDemo {
+  public static void main(String[] args) {
+    int score = 85;
+    if (score >= 90) {
+      System.out.println("A");
+    } else if (score >= 80) {
+      System.out.println("B");
+    } else {
+      System.out.println("Below B");
+    }
+
+    int day = 3;
+    switch (day) {
+      case 1: System.out.println("Mon"); break;
+      case 2: System.out.println("Tue"); break;
+      default: System.out.println("Other");
+    }
+
+    for (int i = 0; i < 3; i++) {
+      System.out.println(i);
+    }
+
+    int n = 0;
+    while (n < 2) {
+      System.out.println("while " + n);
+      n++;
+    }
+  }
+}`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Missing <code className="rounded bg-gray-100 px-1">break</code> in switch (fall-through); off-by-one in for loops.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: METHODS</p>
+        <CodeBlock>{`public class MethodsDemo {
+  static int add(int a, int b) {
+    return a + b;
+  }
+
+  public static void main(String[] args) {
+    System.out.println(add(2, 3));
+  }
+}`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Forgetting <code className="rounded bg-gray-100 px-1">static</code> when calling from static main without an instance.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: SCANNER (USER INPUT)</p>
+        <CodeBlock>{`import java.util.Scanner;
+
+public class ScanDemo {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    System.out.print("Name? ");
+    String name = sc.nextLine();
+    System.out.println("Hello " + name);
+    sc.close();
+  }
+}`}</CodeBlock>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>CLI calculator: read two ints, print sum/diff.</li>
+          <li>Read N lines into ArrayList, print reversed.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://docs.oracle.com/javase/tutorial/">Oracle Java Tutorial</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="java-d2"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="Java Day 2"
+        badgeClass="bg-red-600"
+        title="Java — Day 2: OOP"
+        right="Classes, constructors, inheritance, interfaces"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: CLASSES AND OBJECTS</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">A class defines fields and methods; <code className="rounded bg-gray-100 px-1">new</code> creates an object instance on the heap.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">Domain models (Order, User) map cleanly to tables and APIs at Amazon/Google-scale services.</p>
+        <CodeBlock>{`public class Student {
+  private final String name;
+  private double gpa;
+
+  public Student(String name, double gpa) {
+    this.name = name;
+    this.gpa = gpa;
+  }
+
+  public boolean honorRoll() {
+    return gpa >= 3.5;
+  }
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: CONSTRUCTORS</p>
+        <p className="mb-4">Constructors initialize state; overload for multiple creation patterns; <code className="rounded bg-gray-100 px-1">this()</code> chains.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: INHERITANCE AND super</p>
+        <CodeBlock>{`public class GradStudent extends Student {
+  private final String thesis;
+
+  public GradStudent(String name, double gpa, String thesis) {
+    super(name, gpa);
+    this.thesis = thesis;
+  }
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: INTERFACES AND ABSTRACT CLASSES</p>
+        <p className="mb-4">
+          <strong>Interface</strong>: contract of methods a class must implement (supports multiple inheritance of type).{' '}
+          <strong>Abstract class</strong>: shared partial implementation + abstract methods.
+        </p>
+        <CodeBlock>{`public interface Payable {
+  Money amount();
+}
+
+public abstract class Invoice implements Payable {
+  protected final String id;
+  protected Invoice(String id) { this.id = id; }
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: ACCESS MODIFIERS</p>
+        <ul className="mb-4 list-disc pl-6 text-sm">
+          <li>
+            <code className="rounded bg-gray-100 px-1">public</code> — anywhere
+          </li>
+          <li>
+            <code className="rounded bg-gray-100 px-1">protected</code> — package + subclasses
+          </li>
+          <li>package-private (no modifier) — same package</li>
+          <li>
+            <code className="rounded bg-gray-100 px-1">private</code> — class only (encapsulation)
+          </li>
+        </ul>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Exposing mutable fields; breaking Liskov substitution when overriding.</p>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>Model BankAccount with deposit/withdraw.</li>
+          <li>Interface Drawable with Circle/Rectangle implementations.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://docs.oracle.com/javase/tutorial/java/IandI/index.html">Oracle — Interfaces &amp; Inheritance</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="java-w1"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="Java Week 1"
+        badgeClass="bg-red-700"
+        title="Java — Week 1: Core Concepts"
+        right="Exceptions, collections, generics, streams"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: EXCEPTION HANDLING</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          <code className="rounded bg-gray-100 px-1">try/catch/finally</code> handles recoverable errors; <code className="rounded bg-gray-100 px-1">throws</code> declares checked exceptions.
+        </p>
+        <CodeBlock>{`public class ExDemo {
+  static int parse(String s) throws NumberFormatException {
+    return Integer.parseInt(s);
+  }
+
+  public static void main(String[] args) {
+    try {
+      System.out.println(parse("42"));
+      System.out.println(parse("oops"));
+    } catch (NumberFormatException e) {
+      System.out.println("bad number");
+    } finally {
+      System.out.println("cleanup");
+    }
+  }
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: COLLECTIONS (LIST, MAP, SET, QUEUE)</p>
+        <CodeBlock>{`import java.util.*;
+
+public class CollDemo {
+  public static void main(String[] args) {
+    List<String> list = new ArrayList<>(List.of("a", "b"));
+    Set<Integer> set = new HashSet<>(List.of(1, 1, 2));
+    Map<String, Integer> map = new HashMap<>();
+    map.put("google", 1);
+    Queue<String> q = new ArrayDeque<>();
+    q.add("x");
+    System.out.println(list.size() + " " + set.size() + " " + map.get("google"));
+  }
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: GENERICS</p>
+        <p className="mb-4">
+          Type parameters (<code className="rounded bg-gray-100 px-1">List&lt;T&gt;</code>) enforce compile-time safety and eliminate casts — essential for APIs at scale.
+        </p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: LAMBDAS AND STREAMS</p>
+        <CodeBlock>{`import java.util.List;
+
+public class StreamDemo {
+  public static void main(String[] args) {
+    var nums = List.of(1, 2, 3, 4);
+    int sum = nums.stream().filter(n -> n % 2 == 0).mapToInt(n -> n).sum();
+    System.out.println(sum);
+  }
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STRING MANIPULATION</p>
+        <p className="mb-4">
+          Use <code className="rounded bg-gray-100 px-1">StringBuilder</code> for heavy concatenation; <code className="rounded bg-gray-100 px-1">split</code>, <code className="rounded bg-gray-100 px-1">strip</code>, <code className="rounded bg-gray-100 px-1">substring</code>, <code className="rounded bg-gray-100 px-1">equalsIgnoreCase</code>.
+        </p>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>Read file lines into List, count word frequency with HashMap.</li>
+          <li>Stream pipeline: map employees to salaries, average optional.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://docs.oracle.com/javase/tutorial/collections/">Collections trail</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="java-w2"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="Java Week 2"
+        badgeClass="bg-red-700"
+        title="Java — Week 2: Interview Focus"
+        right="Maps, lists, equals/hashCode, GC"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: HASHMAP VS HASHTABLE VS CONCURRENTHASHMAP</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          All map keys to values; <code className="rounded bg-gray-100 px-1">HashTable</code> is legacy synchronized; <code className="rounded bg-gray-100 px-1">HashMap</code> is default not thread-safe;{' '}
+          <code className="rounded bg-gray-100 px-1">ConcurrentHashMap</code> supports safe concurrent updates with finer locking/CAS.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">Caches, rate limit counters, session maps — choose thread-safety based on access pattern.</p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Mutating keys after insert; using HashMap from many threads without synchronization.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: ARRAYLIST VS LINKEDLIST</p>
+        <p className="mb-4">
+          ArrayList: O(1) indexed access, cache-friendly; LinkedList: O(1) insert middle with iterator, poor random access. Most
+          services default to ArrayList.
+        </p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: COMPARABLE VS COMPARATOR</p>
+        <CodeBlock>{`import java.util.*;
+
+record Person(String name, int age) implements Comparable<Person> {
+  public int compareTo(Person o) {
+    return Integer.compare(this.age, o.age);
+  }
+}
+
+List<Person> people = new ArrayList<>();
+Collections.sort(people, Comparator.comparing(Person::name));`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: equals() AND hashCode()</p>
+        <p className="mb-4">
+          Contract: equal objects must have equal hash codes; used by HashMap/HashSet. Generate with IDE or records carefully.
+        </p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: MEMORY AND GARBAGE COLLECTION</p>
+        <p className="mb-4">
+          Heap (objects) vs stack (frames). GC reclaims unreachable objects; generational GC assumes most objects die young.
+          Avoid unnecessary object churn in hot loops at Google-scale latency targets.
+        </p>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>Implement LRU cache (HashMap + doubly linked list).</li>
+          <li>Debug equals/hashCode bug with HashSet duplicates.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html">
+              ConcurrentHashMap Javadoc
+            </ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+    </div>
+  )
+}
+
+function CCurriculum({ openId, setOpenId }) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <AccordionRow
+        id="c-d1"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="C Day 1"
+        badgeClass="bg-violet-700"
+        title="C — Day 1: Basics"
+        right="Types, printf/scanf, operators, control flow"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: WHAT IS C?</p>
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          C is the mother of modern systems languages. Created in 1972 at Bell Labs, it is still used in operating systems,
+          embedded firmware, and performance-critical components.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Portable assembly: fine control over memory and hardware with minimal runtime.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Linux kernel (C), device drivers, automotive (e.g. Tesla ECU firmware stacks), aerospace (Boeing avionics modules),
+          medical devices — wherever predictability and certification matter.
+        </p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: VARIABLES, TYPES, FORMAT SPECIFIERS</p>
+        <CodeBlock>{`#include <stdio.h>
+
+int main(void) {
+  int age = 25;
+  double gpa = 3.9;
+  char grade = 'A';
+  printf("age=%d gpa=%.2f grade=%c\\n", age, gpa, grade);
+  return 0;
+}`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Wrong format specifier → undefined behavior; uninitialized locals.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: PRINTF AND SCANF</p>
+        <CodeBlock>{`#include <stdio.h>
+
+int main(void) {
+  int x;
+  printf("Enter int: ");
+  scanf("%d", &x);   // needs address of x
+  printf("You entered %d\\n", x);
+  return 0;
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: OPERATORS AND CONTROL FLOW</p>
+        <CodeBlock>{`#include <stdio.h>
+
+int main(void) {
+  int a = 5, b = 2;
+  printf("%d %d %d\\n", a + b, a / b, a % b);
+
+  if (a > b) {
+    printf("greater\\n");
+  } else {
+    printf("not\\n");
+  }
+
+  for (int i = 0; i < 3; i++) {
+    printf("%d ", i);
+  }
+  return 0;
+}`}</CodeBlock>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>Fahrenheit ↔ Celsius converter with scanf/printf.</li>
+          <li>Print primes up to N.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://en.cppreference.com/w/c">cppreference.com — C</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="c-d2"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="C Day 2"
+        badgeClass="bg-violet-700"
+        title="C — Day 2: Pointers"
+        right="&, *, arithmetic, arrays, NULL"
+      >
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A pointer stores the memory address of another value. C exposes addresses explicitly — most managed languages hide
+          this.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Direct memory control for performance: O(1) passing large structs by address, dynamic arrays, hardware MMIO.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">OS kernels, embedded controllers at Tesla, flight software, drivers — pointers are unavoidable.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS:</p>
+        <p className="mb-4">
+          <code className="rounded bg-gray-100 px-1">&amp;x</code> address-of; <code className="rounded bg-gray-100 px-1">*p</code> dereference; pointer arithmetic moves by sizeof(type); array name decays to pointer to first
+          element; <code className="rounded bg-gray-100 px-1">NULL</code> is no address.
+        </p>
+        <CodeBlock>{`#include <stdio.h>
+
+int main(void) {
+  int x = 42;
+  int *p = &x;        // p holds address of x
+  printf("%d\\n", *p); // 42 — follow address
+  *p = 7;             // writes through pointer
+  printf("%d\\n", x);  // 7
+
+  int arr[] = {10, 20, 30};
+  int *q = arr;       // same as &arr[0]
+  printf("%d %d\\n", q[1], *(q + 1)); // 20 20
+
+  int *n = NULL;
+  if (n == NULL) {
+    printf("safe\\n");
+  }
+  return 0;
+}`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Dangling pointers; dereferencing NULL; out-of-bounds pointer arithmetic.</p>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>Swap two ints using pointers.</li>
+          <li>Reverse array in-place with two pointers.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://en.cppreference.com/w/c/language/pointer">cppreference — pointers</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="c-w1"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="C Week 1"
+        badgeClass="bg-violet-800"
+        title="C — Week 1: Core Topics"
+        right="Functions, strings, structs, malloc, files"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: FUNCTIONS AND RECURSION</p>
+        <CodeBlock>{`#include <stdio.h>
+
+int fact(int n) {
+  if (n <= 1) return 1;
+  return n * fact(n - 1);
+}
+
+int main(void) {
+  printf("%d\\n", fact(5));
+  return 0;
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: ARRAYS AND STRINGS</p>
+        <p className="mb-4">C strings are char arrays ending with <code className="rounded bg-gray-100 px-1">'\\0'</code>. Use <code className="rounded bg-gray-100 px-1">strlen</code>, <code className="rounded bg-gray-100 px-1">strcmp</code>, <code className="rounded bg-gray-100 px-1">strcpy</code> from <code className="rounded bg-gray-100 px-1">&lt;string.h&gt;</code>.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STRUCTURES AND UNIONS</p>
+        <CodeBlock>{`#include <stdio.h>
+
+typedef struct {
+  char name[32];
+  int id;
+} Student;
+
+typedef union {
+  int i;
+  float f;
+} Payload;`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: DYNAMIC MEMORY</p>
+        <CodeBlock>{`#include <stdlib.h>
+#include <stdio.h>
+
+int main(void) {
+  int *p = malloc(10 * sizeof(int));
+  if (!p) return 1;
+  p[0] = 5;
+  free(p);   // release
+  return 0;
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: FILE I/O</p>
+        <CodeBlock>{`#include <stdio.h>
+
+int main(void) {
+  FILE *f = fopen("out.txt", "w");
+  if (!f) return 1;
+  fprintf(f, "hello\\n");
+  fclose(f);
+  return 0;
+}`}</CodeBlock>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>Linked list of ints (malloc/free each node).</li>
+          <li>Word count program reading a text file.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://www.gnu.org/software/libc/manual/html_node/index.html">GNU C Library manual</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+    </div>
+  )
+}
+
+function CppCurriculum({ openId, setOpenId }) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <AccordionRow
+        id="cpp-d1"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="C++ Day 1"
+        badgeClass="bg-emerald-800"
+        title="C++ — Day 1: Basics + OOP"
+        right="Classes, RAII, destructors"
+      >
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          C++ adds classes, references, templates, and RAII on top of C. RAII: acquire resource in constructor, release in
+          destructor — ties lifetime to scope.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">Game engines, browsers, trading systems, Google/Meta infra hot paths — where C++ performance wins.</p>
+        <CodeBlock>{`#include <iostream>
+#include <string>
+
+class Student {
+  std::string name;
+  double gpa;
+public:
+  Student(std::string n, double g) : name(std::move(n)), gpa(g) {}
+  ~Student() { /* cleanup if needed */ }
+  bool honor() const { return gpa >= 3.5; }
+};
+
+int main() {
+  Student s("Sai", 3.9);
+  std::cout << std::boolalpha << s.honor() << "\\n";
+}`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Rule of three/five violations; slicing when copying polymorphic objects by value.</p>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>RAII File wrapper wrapping FILE* or fstream.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://en.cppreference.com/w/cpp/language/raii">cppreference — RAII</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="cpp-d2"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="C++ Day 2"
+        badgeClass="bg-emerald-800"
+        title="C++ — Day 2: Advanced"
+        right="Templates, STL, iterators, smart pointers"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: TEMPLATES</p>
+        <CodeBlock>{`template <typename T>
+T add(T a, T b) { return a + b; }`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STL CONTAINERS</p>
+        <CodeBlock>{`#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+  vector<int> v = {3,1,4};
+  map<string,int> m{{"a",1}};
+  set<int> s{1,2,2};
+  queue<int> q; q.push(1);
+  stack<int> st; st.push(2);
+  priority_queue<int> pq; pq.push(3);
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: ITERATORS</p>
+        <p className="mb-4">Range-for uses iterators; algorithms take begin/end pairs.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: SMART POINTERS</p>
+        <CodeBlock>{`#include <memory>
+auto u = std::make_unique<int>(5);
+auto s = std::make_shared<int>(7);`}</CodeBlock>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>Template max() for int/double.</li>
+          <li>shared_ptr graph node with weak_ptr back-edges.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://en.cppreference.com/w/cpp/container">cppreference — containers</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="cpp-w1"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="C++ Week 1"
+        badgeClass="bg-emerald-900"
+        title="C++ — Week 1: Competitive Programming"
+        right="Fast I/O, STL patterns, algorithms, bits"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: FAST I/O</p>
+        <CodeBlock>{`#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  int n; cin >> n;
+  cout << n * 2 << "\\n";
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: STL INTERVIEW PATTERNS</p>
+        <p className="mb-4">Frequency with map; top-K with priority_queue; sliding window with deque; multiset for duplicates.</p>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: ALGORITHMS HEADER</p>
+        <CodeBlock>{`#include <algorithm>
+#include <vector>
+using namespace std;
+
+int main() {
+  vector<int> v = {1,3,3,7};
+  sort(v.begin(), v.end());
+  bool ok = binary_search(v.begin(), v.end(), 3);
+  auto it = lower_bound(v.begin(), v.end(), 3);
+  auto jt = upper_bound(v.begin(), v.end(), 3);
+}`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: BIT MANIPULATION BASICS</p>
+        <CodeBlock>{`int x = 6;            // 110
+int set = x | (1<<0); // set bit 0
+int clr = x & ~(1<<1);
+bool on = (x >> 2) & 1;`}</CodeBlock>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>Implement lower_bound behavior manually on sorted vector.</li>
+          <li>Count set bits (Brian Kernighan).</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://en.cppreference.com/w/cpp/algorithm">cppreference — algorithms</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+    </div>
+  )
+}
+
+function SqlCurriculum({ openId, setOpenId }) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <AccordionRow
+        id="sql-basic"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="SQL"
+        badgeClass="bg-amber-800"
+        title="SQL — Basics"
+        right="SELECT, filters, aggregates, GROUP BY, joins overview"
+      >
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          SQL (Structured Query Language) is how you query relational databases. Every major company stores orders, users, and
+          events in databases — SQL extracts exactly the slice you need.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">WHY IT EXISTS:</p>
+        <p className="mb-4">Billions of rows require declarative filtering, aggregation, and joins — standardized since the 1970s.</p>
+        <p className="mb-1 font-semibold text-gray-900">HOW COMPANIES USE IT:</p>
+        <p className="mb-4">
+          Amazon queries order pipelines; Netflix analyzes viewing in data warehouses; analysts at Microsoft, Google, and PayPal
+          live in SQL daily.
+        </p>
+        <p className="mb-2 font-semibold text-gray-900">CODE:</p>
+        <CodeBlock>{`SELECT name, salary
+FROM employees
+WHERE department = 'Engineering'
+  AND salary BETWEEN 80000 AND 150000
+  AND level IN ('L4','L5')
+  AND email NOT LIKE '%@test.com'
+ORDER BY salary DESC
+LIMIT 20;`}</CodeBlock>
+        <CodeBlock>{`SELECT department,
+       COUNT(*) AS headcount,
+       AVG(salary) AS avg_sal,
+       MAX(salary) AS top_sal
+FROM employees
+GROUP BY department
+HAVING COUNT(*) >= 5;`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Using WHERE on aggregates (use HAVING); forgetting GROUP BY columns; duplicate rows from joins.</p>
+        <p className="mb-2">
+          <span className="mr-2">🎯</span>
+          <strong>Practice</strong>
+        </p>
+        <ol className="mb-4 list-decimal pl-6 marker:text-primary">
+          <li>Monthly revenue by region from orders table.</li>
+          <li>Employees earning above department average.</li>
+        </ol>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://www.postgresql.org/docs/current/tutorial-sql.html">PostgreSQL SQL intro</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="sql-joins"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="SQL"
+        badgeClass="bg-amber-800"
+        title="SQL — Joins (deep dive)"
+        right="Inner, left, right, full"
+      >
+        <p className="mb-1 font-semibold text-gray-900">DEFINITION:</p>
+        <p className="mb-4">
+          A JOIN combines rows from two tables using a related column. Example schema: <code className="rounded bg-gray-100 px-1">users(user_id, name, email)</code>,{' '}
+          <code className="rounded bg-gray-100 px-1">orders(order_id, user_id, product, amount)</code>.
+        </p>
+        <p className="mb-1 font-semibold text-gray-900">HOW IT WORKS — INNER JOIN:</p>
+        <p className="mb-4">Only rows where match exists on <strong>both</strong> sides.</p>
+        <CodeBlock>{`SELECT u.name, o.product, o.amount
+FROM users u
+INNER JOIN orders o ON o.user_id = u.user_id;`}</CodeBlock>
+        <p className="mb-4 text-sm text-gray-700">Output: one row per matching pair — users with no orders disappear.</p>
+        <p className="mb-1 font-semibold text-gray-900">LEFT JOIN:</p>
+        <p className="mb-4">All users, plus orders if any; missing order columns become NULL.</p>
+        <CodeBlock>{`SELECT u.name, o.order_id
+FROM users u
+LEFT JOIN orders o ON o.user_id = u.user_id;`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">RIGHT JOIN:</p>
+        <p className="mb-4">All orders, users optional — mirror of LEFT; some teams prefer flipping tables and using LEFT only.</p>
+        <CodeBlock>{`SELECT u.name, o.product
+FROM users u
+RIGHT JOIN orders o ON o.user_id = u.user_id;`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">FULL OUTER JOIN:</p>
+        <p className="mb-4">Keeps all users and all orders; non-matching sides NULL-padded.</p>
+        <CodeBlock>{`SELECT u.name, o.product
+FROM users u
+FULL OUTER JOIN orders o ON o.user_id = u.user_id;`}</CodeBlock>
+        <p className="mb-1 font-semibold text-gray-900">VISUAL:</p>
+        <p className="mb-4">Think Venn diagrams: inner = intersection; left = left circle + overlap; full = union with blanks.</p>
+        <p className="mb-1 font-semibold text-gray-900">COMMON MISTAKES:</p>
+        <p className="mb-4">Joining on wrong key; accidental cross join (missing ON); duplicate explosion from one-to-many.</p>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://sqlbolt.com/lesson/select-queries-with-joins">SQLBolt — Joins</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="sql-adv"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="SQL"
+        badgeClass="bg-amber-900"
+        title="SQL — Advanced"
+        right="Subqueries, CTEs, windows, indexes, EXPLAIN"
+      >
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: SUBQUERIES</p>
+        <CodeBlock>{`SELECT name
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: CTES (WITH)</p>
+        <CodeBlock>{`WITH dept_avg AS (
+  SELECT department_id, AVG(salary) AS avg_sal
+  FROM employees
+  GROUP BY department_id
+)
+SELECT e.name, e.salary, d.avg_sal
+FROM employees e
+JOIN dept_avg d ON e.department_id = d.department_id
+WHERE e.salary > d.avg_sal;`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: WINDOW FUNCTIONS</p>
+        <CodeBlock>{`SELECT name, salary,
+       ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rn,
+       RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rnk,
+       LAG(salary) OVER (ORDER BY hire_date) AS prev_sal
+FROM employees;`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: INDEXES</p>
+        <p className="mb-4">
+          B-tree indexes speed equality/range on columns; composite indexes (a,b) help filters on prefix a. Tradeoff: faster reads,
+          slower writes, storage.
+        </p>
+        <CodeBlock>{`CREATE INDEX idx_orders_user ON orders(user_id);`}</CodeBlock>
+        <Divider />
+        <p className="mb-6 text-lg font-bold text-gray-900">SECTION: EXPLAIN</p>
+        <p className="mb-4">Run <code className="rounded bg-gray-100 px-1">EXPLAIN (ANALYZE, BUFFERS)</code> in Postgres to see seq scan vs index scan, row estimates, actual time.</p>
+        <p className="mb-2">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://use-the-index-luke.com/">Use The Index, Luke</ResourceLink>
+          </li>
+        </ul>
+      </AccordionRow>
+
+      <AccordionRow
+        id="sql-practice"
+        openId={openId}
+        setOpenId={setOpenId}
+        badge="SQL"
+        badgeClass="bg-amber-700"
+        title="SQL — 10 Practice Problems"
+        right="Questions + solutions"
+      >
+        <ol className="list-decimal space-y-8 pl-6 text-sm leading-relaxed marker:text-primary">
+          <li>
+            <strong>Users with &gt;3 orders</strong>
+            <CodeBlock>{`SELECT u.user_id, u.name, COUNT(o.order_id) AS cnt
+FROM users u
+JOIN orders o ON o.user_id = u.user_id
+GROUP BY u.user_id, u.name
+HAVING COUNT(o.order_id) > 3;`}</CodeBlock>
+            <p className="mt-2 text-gray-700">
+              <code className="rounded bg-gray-100 px-1">JOIN</code> links users to orders; <code className="rounded bg-gray-100 px-1">GROUP BY</code> collapses per user;{' '}
+              <code className="rounded bg-gray-100 px-1">HAVING</code> filters aggregates (&gt;3).
+            </p>
+          </li>
+          <li>
+            <strong>Second highest salary</strong>
+            <CodeBlock>{`SELECT MAX(salary) AS second_highest
+FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);`}</CodeBlock>
+            <p className="mt-2 text-gray-700">Subquery finds top salary; outer max finds best below that. (Handles ties with dense_rank variant in production.)</p>
+          </li>
+          <li>
+            <strong>Earn more than manager</strong>
+            <CodeBlock>{`SELECT e.name
+FROM employees e
+JOIN employees m ON e.manager_id = m.employee_id
+WHERE e.salary > m.salary;`}</CodeBlock>
+            <p className="mt-2 text-gray-700">Self-join maps employee row to manager row via manager_id.</p>
+          </li>
+          <li>
+            <strong>Duplicate emails</strong>
+            <CodeBlock>{`SELECT email
+FROM users
+GROUP BY email
+HAVING COUNT(*) > 1;`}</CodeBlock>
+            <p className="mt-2 text-gray-700">Groups identical emails; keeps those appearing more than once.</p>
+          </li>
+          <li>
+            <strong>Customers who never ordered</strong>
+            <CodeBlock>{`SELECT c.customer_id
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.customer_id
+WHERE o.order_id IS NULL;`}</CodeBlock>
+            <p className="mt-2 text-gray-700">LEFT JOIN preserves all customers; NULL order means no match.</p>
+          </li>
+          <li>
+            <strong>Top 3 products per category by sales</strong>
+            <CodeBlock>{`SELECT category_id, product_id, sales
+FROM (
+  SELECT category_id, product_id, sales,
+         ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY sales DESC) AS rn
+  FROM product_sales
+) t
+WHERE rn <= 3;`}</CodeBlock>
+            <p className="mt-2 text-gray-700">Window ranks within each category; filter rn for top 3.</p>
+          </li>
+          <li>
+            <strong>Running total of sales by date</strong>
+            <CodeBlock>{`SELECT sale_date, amount,
+       SUM(amount) OVER (ORDER BY sale_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total
+FROM daily_sales;`}</CodeBlock>
+            <p className="mt-2 text-gray-700">Ordered window frame accumulates sum as dates advance.</p>
+          </li>
+          <li>
+            <strong>Users active in last 30 days</strong>
+            <CodeBlock>{`SELECT DISTINCT user_id
+FROM events
+WHERE event_time >= NOW() - INTERVAL '30 days';`}</CodeBlock>
+            <p className="mt-2 text-gray-700">Time filter on fact table; dialect may use DATE_SUB/CURRENT_TIMESTAMP.</p>
+          </li>
+          <li>
+            <strong>Department with highest average salary</strong>
+            <CodeBlock>{`SELECT department_id
+FROM employees
+GROUP BY department_id
+ORDER BY AVG(salary) DESC
+LIMIT 1;`}</CodeBlock>
+            <p className="mt-2 text-gray-700">Aggregate per dept, sort by avg desc, take first.</p>
+          </li>
+          <li>
+            <strong>Managers with &gt;5 reports</strong>
+            <CodeBlock>{`SELECT manager_id
+FROM employees
+WHERE manager_id IS NOT NULL
+GROUP BY manager_id
+HAVING COUNT(*) > 5;`}</CodeBlock>
+            <p className="mt-2 text-gray-700">Counts direct reports per manager_id using GROUP BY + HAVING.</p>
+          </li>
+        </ol>
+        <p className="mb-2 mt-6">
+          <span className="mr-2">📚</span>
+          <strong>Go Deeper</strong>
+        </p>
+        <ul className="list-disc space-y-1 pl-6 marker:text-primary">
+          <li>
+            <ResourceLink href="https://leetcode.com/studyplan/sql-50/">LeetCode SQL 50</ResourceLink>
+          </li>
+        </ul>
       </AccordionRow>
     </div>
   )
@@ -1785,122 +3400,6 @@ def bfs(graph, start):
 
 function GenericTopicCurriculum({ topic, openId, setOpenId }) {
   const blocks = {
-    java: {
-      rows: [
-        {
-          id: 'j1',
-          badge: 'Week 1',
-          bc: 'bg-red-600',
-          title: 'Java fundamentals',
-          right: 'Syntax, OOP, collections',
-          body: (
-            <>
-              <p>Classes, interfaces, packages, generics, and the collections framework (List, Map, Set).</p>
-              <CodeBlock>{`public class Hello {
-  public static void main(String[] args) {
-    System.out.println("CrackWithAI");
-  }
-}`}</CodeBlock>
-            </>
-          ),
-        },
-        {
-          id: 'j2',
-          badge: 'Week 2',
-          bc: 'bg-red-600',
-          title: 'JVM & concurrency basics',
-          right: 'Threads, synchronized, executors',
-          body: (
-            <p>
-              Understand garbage collection at a high level, memory model basics, and safe use of{' '}
-              <code className="rounded bg-gray-100 px-1">ExecutorService</code> for async tasks.
-            </p>
-          ),
-        },
-      ],
-    },
-    c: {
-      rows: [
-        {
-          id: 'c1',
-          badge: 'Module 1',
-          bc: 'bg-violet-700',
-          title: 'Pointers & memory',
-          right: 'Stack vs heap',
-          body: (
-            <>
-              <CodeBlock>{`#include <stdio.h>
-int main(void) {
-  int x = 42;
-  int *p = &x;
-  printf("%d\\n", *p);
-  return 0;
-}`}</CodeBlock>
-            </>
-          ),
-        },
-      ],
-    },
-    cpp: {
-      rows: [
-        {
-          id: 'cp1',
-          badge: 'Module 1',
-          bc: 'bg-emerald-800',
-          title: 'STL containers',
-          right: 'vector, map, set',
-          body: (
-            <CodeBlock>{`#include <vector>
-#include <iostream>
-int main() {
-  std::vector<int> v = {1,2,3};
-  for (int x : v) std::cout << x << " ";
-}`}</CodeBlock>
-          ),
-        },
-      ],
-    },
-    sql: {
-      rows: [
-        {
-          id: 's1',
-          badge: 'Basics',
-          bc: 'bg-amber-800',
-          title: 'SELECT, WHERE, ORDER BY',
-          right: 'Filtering & sorting',
-          body: (
-            <CodeBlock>{`SELECT name, salary
-FROM employees
-WHERE department = 'Engineering'
-ORDER BY salary DESC;`}</CodeBlock>
-          ),
-        },
-        {
-          id: 's2',
-          badge: 'Joins',
-          bc: 'bg-amber-800',
-          title: 'INNER and LEFT JOIN',
-          right: 'Relate tables',
-          body: (
-            <CodeBlock>{`SELECT u.name, o.total
-FROM users u
-JOIN orders o ON o.user_id = u.id;`}</CodeBlock>
-          ),
-        },
-      ],
-    },
-    'system-design': {
-      rows: [
-        {
-          id: 'sd1',
-          badge: 'Core',
-          bc: 'bg-teal-700',
-          title: 'Reliability & scalability',
-          right: 'SLAs, redundancy, failover',
-          body: <p>Practice 1 design/week: URL shortener, news feed, chat. Draw boxes; label data flows and failures.</p>,
-        },
-      ],
-    },
     'ml-ai': {
       rows: [
         {
@@ -2229,6 +3728,66 @@ export default function LearningPlan() {
                 </div>
 
                 <PythonCurriculum openId={openAccordion} setOpenId={setOpenAccordion} />
+              </>
+            ) : activeTopic === 'java' ? (
+              <>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    <span className="mr-2">{TOPIC_HEADINGS.java.icon}</span>
+                    {TOPIC_HEADINGS.java.title}
+                  </h2>
+                  <p className="mt-2 text-gray-600">{TOPIC_HEADINGS.java.sub}</p>
+                </div>
+                <JavaCurriculum openId={openAccordion} setOpenId={setOpenAccordion} />
+              </>
+            ) : activeTopic === 'c' ? (
+              <>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    <span className="mr-2">{TOPIC_HEADINGS.c.icon}</span>
+                    {TOPIC_HEADINGS.c.title}
+                  </h2>
+                  <p className="mt-2 text-gray-600">{TOPIC_HEADINGS.c.sub}</p>
+                </div>
+                <CCurriculum openId={openAccordion} setOpenId={setOpenAccordion} />
+              </>
+            ) : activeTopic === 'cpp' ? (
+              <>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    <span className="mr-2">{TOPIC_HEADINGS.cpp.icon}</span>
+                    {TOPIC_HEADINGS.cpp.title}
+                  </h2>
+                  <p className="mt-2 text-gray-600">{TOPIC_HEADINGS.cpp.sub}</p>
+                </div>
+                <CppCurriculum openId={openAccordion} setOpenId={setOpenAccordion} />
+              </>
+            ) : activeTopic === 'sql' ? (
+              <>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    <span className="mr-2">{TOPIC_HEADINGS.sql.icon}</span>
+                    {TOPIC_HEADINGS.sql.title}
+                  </h2>
+                  <p className="mt-2 text-gray-600">{TOPIC_HEADINGS.sql.sub}</p>
+                </div>
+                <SqlCurriculum openId={openAccordion} setOpenId={setOpenAccordion} />
+              </>
+            ) : activeTopic === 'system-design' ? (
+              <>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    <span className="mr-2">{TOPIC_HEADINGS['system-design'].icon}</span>
+                    {TOPIC_HEADINGS['system-design'].title}
+                  </h2>
+                  <p className="mt-2 text-gray-600">
+                    Four-week track: fundamentals, classic designs, complex systems, and interview execution — same content as
+                    the Python path System Design weeks.
+                  </p>
+                </div>
+                <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                  <SystemDesignWeeks openId={openAccordion} setOpenId={setOpenAccordion} idPrefix="sd" />
+                </div>
               </>
             ) : (
               <>
