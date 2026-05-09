@@ -1,38 +1,108 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Sparkles, Menu, X } from 'lucide-react'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Menu, Sparkles, X } from 'lucide-react'
+import { supabase } from '../lib/supabaseClient'
 
-const navItems = [
-  { label: 'Features', href: '#features' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Pricing', href: '#pricing' },
+const topLinks = [
+  { label: 'ATS Score', to: '/ats-checker' },
+  { label: 'Study Plan', to: '/learning-plan' },
+  { label: 'Practice', to: '/practice' },
+  { label: 'Learn', to: '/learn' },
 ]
 
+const secondaryLinks = [
+  { label: 'DSA', hash: '#dsa' },
+  { label: 'Python', hash: '#python' },
+  { label: 'Java', hash: '#java' },
+  { label: 'C', hash: '#c' },
+  { label: 'C++', hash: '#cpp' },
+  { label: 'SQL', hash: '#sql' },
+  { label: 'System Design', hash: '#system-design' },
+  { label: 'Interview Prep', hash: '#interview-prep' },
+  { label: 'ML & AI', hash: '#ml-ai' },
+  { label: 'Web Dev', hash: '#web-dev' },
+]
+
+function firstName(user) {
+  const meta = user?.user_metadata || {}
+  const full = meta.full_name || meta.name || ''
+  const first = String(full).trim().split(/\s+/)[0]
+  return first || (user?.email ? user.email.split('@')[0] : 'Student')
+}
+
+function capitalizeFirst(name) {
+  const s = String(name || '')
+  if (!s) return ''
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
 function scrollToHash(hash) {
-  if (!hash) return
   const el = document.querySelector(hash)
-  if (!el) return
+  if (!el) return false
   el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  return true
+}
+
+function TopNavItem({ to, children }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        [
+          'relative text-[14px] font-medium text-gray-800 transition-colors duration-200',
+          'hover:text-primary',
+          isActive ? 'text-primary' : '',
+          'after:absolute after:-bottom-[10px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-200',
+          isActive ? 'after:w-full' : '',
+        ].join(' ')
+      }
+    >
+      {children}
+    </NavLink>
+  )
 }
 
 export default function Navbar() {
   const location = useLocation()
-  const onHome = useMemo(() => location.pathname === '/', [location.pathname])
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 8)
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  const [auth, setAuth] = useState({ loading: true, user: null })
+
+  const activeSecondary = useMemo(() => {
+    const hash = location.hash || ''
+    const found = secondaryLinks.find((p) => p.hash === hash)
+    return found?.hash || ''
+  }, [location.hash])
 
   useEffect(() => {
     setMobileOpen(false)
   }, [location.pathname])
+
+  useEffect(() => {
+    let alive = true
+    async function load() {
+      try {
+        const { data } = await supabase.auth.getUser()
+        if (!alive) return
+        setAuth({ loading: false, user: data?.user ?? null })
+      } catch {
+        if (!alive) return
+        setAuth({ loading: false, user: null })
+      }
+    }
+    load()
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuth({ loading: false, user: session?.user ?? null })
+    })
+
+    return () => {
+      alive = false
+      sub?.subscription?.unsubscribe?.()
+    }
+  }, [])
 
   useEffect(() => {
     if (!mobileOpen) return
@@ -43,128 +113,175 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [mobileOpen])
 
-  function handleHashClick(e, href) {
-    if (!href.startsWith('#')) return
-    if (!onHome) return
-    e.preventDefault()
-    scrollToHash(href)
+  async function onSignOut() {
+    await supabase.auth.signOut()
+    navigate('/', { replace: true })
+  }
+
+  function handleSecondaryClick(hash) {
+    // If we are already on /learn, scroll immediately; otherwise route to /learn + hash.
+    if (location.pathname === '/learn') {
+      const ok = scrollToHash(hash)
+      if (!ok) {
+        // fallback: update URL hash; Learn page will handle after render
+        navigate(`/learn${hash}`)
+      } else {
+        window.history.replaceState(null, '', `/learn${hash}`)
+      }
+      return
+    }
+    navigate(`/learn${hash}`)
   }
 
   return (
-    <header
-      className={[
-        'sticky top-0 z-50 h-16 border-b border-transparent transition-all',
-        scrolled ? 'border-border/70 bg-bg/70 backdrop-blur' : 'bg-transparent',
-      ].join(' ')}
-    >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link
-          to="/"
-          className="group inline-flex items-center gap-2 rounded-button px-2 py-1 transition hover:bg-white/5"
-        >
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-button bg-primary/15 text-primary ring-1 ring-primary/25 transition group-hover:bg-primary/20">
-            <Sparkles className="h-5 w-5" />
-          </span>
-          <span className="text-base font-extrabold tracking-tight text-text-primary">
-            CrackWithAI
-          </span>
-        </Link>
+    <header className="sticky top-0 z-50">
+      {/* TOP ROW */}
+      <div className="h-[60px] border-b border-gray-200 bg-white">
+        <div className="mx-auto flex h-[60px] max-w-7xl items-center justify-between px-4 sm:px-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2"
+          >
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-primary">
+              <Sparkles className="h-5 w-5" />
+            </span>
+            <span className="text-[18px] font-semibold text-gray-900">CrackWithAI</span>
+          </Link>
 
-        <nav className="hidden items-center gap-2 md:flex">
-          {navItems.map((item) => (
-            onHome ? (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => handleHashClick(e, item.href)}
-                className="rounded-button px-3 py-2 text-sm font-medium text-text-muted transition hover:bg-white/5 hover:text-text-primary"
-              >
-                {item.label}
-              </a>
+          <nav className="hidden items-center gap-6 md:flex">
+            {topLinks.map((l) => (
+              <TopNavItem key={l.to} to={l.to}>
+                {l.label}
+              </TopNavItem>
+            ))}
+          </nav>
+
+          <div className="hidden items-center gap-4 md:flex">
+            {auth.loading ? (
+              <div className="h-5 w-40 animate-pulse rounded bg-gray-100" />
+            ) : auth.user ? (
+              <>
+                <div className="text-[14px] text-gray-800">
+                  Hi, <span className="font-semibold">{capitalizeFirst(firstName(auth.user))}</span>
+                </div>
+                <button
+                  onClick={onSignOut}
+                  className="text-[14px] text-gray-800 transition-colors duration-200 hover:text-primary"
+                >
+                  Sign Out
+                </button>
+              </>
             ) : (
-              <Link
-                key={item.label}
-                to={`/${item.href}`}
-                className="rounded-button px-3 py-2 text-sm font-medium text-text-muted transition hover:bg-white/5 hover:text-text-primary"
-              >
-                {item.label}
-              </Link>
-            )
-          ))}
-        </nav>
+              <>
+                <Link to="/signin" className="text-[14px] text-gray-800 transition-colors duration-200 hover:text-primary">
+                  Sign In
+                </Link>
+                <Link
+                  to="/signup"
+                  className="rounded-md bg-success px-3 py-1.5 text-[13px] font-semibold text-white transition-colors duration-200 hover:bg-primary"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
+          </div>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <NavLink
-            to="/signin"
-            className="rounded-button px-4 py-2 text-sm font-semibold text-text-primary ring-1 ring-border transition hover:bg-white/5"
+          <button
+            type="button"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-gray-900 transition-colors duration-200 hover:bg-gray-100 md:hidden"
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen((v) => !v)}
           >
-            Sign In
-          </NavLink>
-          <NavLink
-            to="/signup"
-            className="rounded-button bg-primary px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:bg-accent"
-          >
-            Get Started Free
-          </NavLink>
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
 
-        <button
-          type="button"
-          className="inline-flex items-center justify-center rounded-button p-2 text-text-primary ring-1 ring-border transition hover:bg-white/5 md:hidden"
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={mobileOpen}
-          onClick={() => setMobileOpen((v) => !v)}
+        {/* Mobile slide-down menu */}
+        <div
+          className={[
+            'md:hidden overflow-hidden border-t border-gray-200 bg-white',
+            'transition-[max-height] duration-300 ease-in-out',
+            mobileOpen ? 'max-h-[520px]' : 'max-h-0',
+          ].join(' ')}
         >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-      </div>
-
-      {mobileOpen ? (
-        <div className="border-t border-border bg-bg/95 backdrop-blur md:hidden">
           <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
             <div className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                onHome ? (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    onClick={(e) => {
-                      handleHashClick(e, item.href)
-                      setMobileOpen(false)
-                    }}
-                    className="rounded-button px-3 py-2 text-sm font-semibold text-text-muted transition hover:bg-white/5 hover:text-text-primary"
-                  >
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link
-                    key={item.label}
-                    to={`/${item.href}`}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-button px-3 py-2 text-sm font-semibold text-text-muted transition hover:bg-white/5 hover:text-text-primary"
-                  >
-                    {item.label}
-                  </Link>
-                )
+              {topLinks.map((l) => (
+                <NavLink
+                  key={l.to}
+                  to={l.to}
+                  className={({ isActive }) =>
+                    [
+                      'min-h-[44px] px-2 py-3 text-[14px] transition-colors duration-200',
+                      isActive ? 'text-primary' : 'text-gray-800 hover:text-primary',
+                    ].join(' ')
+                  }
+                >
+                  {l.label}
+                </NavLink>
               ))}
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <Link
-                to="/signin"
-                className="rounded-button px-4 py-2 text-center text-sm font-semibold text-text-primary ring-1 ring-border transition hover:bg-white/5"
-              >
-                Sign In
-              </Link>
-              <Link
-                to="/signup"
-                className="rounded-button bg-primary px-4 py-2 text-center text-sm font-semibold text-white shadow-glow transition hover:bg-accent"
-              >
-                Get Started
-              </Link>
+
+            <div className="mt-4 flex items-center justify-between gap-4">
+              {auth.user ? (
+                <>
+                  <button
+                    onClick={onSignOut}
+                    className="text-[14px] text-gray-800 transition-colors duration-200 hover:text-primary"
+                  >
+                    Sign Out
+                  </button>
+                  <div className="text-[14px] text-gray-800">
+                    Hi, <span className="font-semibold">{capitalizeFirst(firstName(auth.user))}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/signin"
+                    className="text-[14px] text-gray-800 transition-colors duration-200 hover:text-primary"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="rounded-md bg-success px-3 py-2 text-[13px] font-semibold text-white transition-colors duration-200 hover:bg-primary"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
-      ) : null}
+      </div>
+
+      {/* BOTTOM ROW */}
+      <div className="h-[40px] border-b border-gray-200 bg-[#f9fafb]">
+        <div className="mx-auto flex h-[40px] max-w-7xl items-center px-4 sm:px-6">
+          <div className="no-scrollbar flex w-full items-center gap-5 overflow-x-auto text-[13px]">
+            {secondaryLinks.map((p) => {
+              const isActive = location.pathname === '/learn' && activeSecondary === p.hash
+              return (
+                <button
+                  key={p.hash}
+                  type="button"
+                  onClick={() => handleSecondaryClick(p.hash)}
+                  className={[
+                    'relative shrink-0 py-1 text-[13px] text-gray-700 transition-colors duration-200 hover:text-primary',
+                    isActive ? 'text-primary' : '',
+                    'after:absolute after:-bottom-[2px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-200',
+                    isActive ? 'after:w-full' : '',
+                  ].join(' ')}
+                >
+                  {p.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
     </header>
   )
 }

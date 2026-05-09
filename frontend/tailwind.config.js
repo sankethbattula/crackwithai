@@ -18,6 +18,7 @@ export default {
         text: {
           primary: '#ffffff',
           muted: '#94a3b8',
+          subtle: '#64748b',
         },
       },
       borderRadius: {

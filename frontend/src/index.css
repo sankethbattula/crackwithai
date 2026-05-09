@@ -37,3 +37,11 @@ html {
 ::selection {
   background: rgba(124, 58, 237, 0.35);
 }
+
+/* Utility: hide scrollbar on horizontal pill rows */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
